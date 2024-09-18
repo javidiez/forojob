@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { Navbar } from "./components/Navbar/Navbar";
+import { Home } from "./pages/Home/Home";
 
 const App = () => {
 
@@ -20,6 +21,7 @@ const App = () => {
       <BrowserRouter>
         <Navbar />
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFoundRedirect />} />
         </Routes>
       </BrowserRouter>

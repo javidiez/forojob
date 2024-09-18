@@ -20,7 +20,7 @@ export const Navbar = () => {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <Link to="/" className="nav-link fs-4 active pe-5" aria-current="page">Inicio</Link>
+                            <Link to="/" className="nav-link fs-4 active pe-4" aria-current="page">Inicio</Link>
                         </li>
                     </ul>
                     <div className="d-flex gap-2">
