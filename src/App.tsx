@@ -1,13 +1,30 @@
-import './App.css'
+import { useEffect } from "react";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { Navbar } from "./components/Navbar/Navbar";
 
-function App() {
+const App = () => {
 
+  const NotFoundRedirect = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      // Redirige a la página de perfil si la ruta no existe
+      navigate('/');
+    }, [navigate]);
+
+    return null;
+  };
 
   return (
-    <>
+    <div>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="*" element={<NotFoundRedirect />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
+};
 
-    </>
-  )
-}
-
-export default App
+export default App;
