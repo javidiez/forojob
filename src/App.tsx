@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { Navbar } from "./components/Navbar/Navbar";
 import { Home } from "./pages/Home/Home";
+import { LogIn } from "./pages/LogIn/LogIn";
+import { SignUp } from "./pages/SignUp/SignUp";
+import { AppProvider } from "./store/AppContext";
 
 const App = () => {
 
@@ -18,13 +21,17 @@ const App = () => {
 
   return (
     <div>
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFoundRedirect />} />
-        </Routes>
-      </BrowserRouter>
+      <AppProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LogIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="*" element={<NotFoundRedirect />} />
+          </Routes>
+        </BrowserRouter>
+      </AppProvider>
     </div>
   );
 };

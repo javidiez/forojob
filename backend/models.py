@@ -27,3 +27,104 @@ class User(db.Model):
             "image": self.image,
             "phone": self.phone
         }
+
+class Theme(db.Model):
+    __tablename__ = 'themes'
+    id = db.Column(db.Integer, primary_key=True)
+    title =  db.Column(db.String(250))
+    content =  db.Column(db.Text)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+    autor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    user = db.relationship('User', backref='themes')
+    category = db.relationship('Category', backref='themes')
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "content": self.content,
+            "category":{
+                "id": self.category.id,
+                "name":self.category.name
+                },
+            "user":{
+                "id": self.user.id,
+                "name":self.user.name,
+                "lastname":self.user.lastname,
+                "username":self.user.username
+                }
+        }
+
+class Category(db.Model):
+    __tablename__ = 'categories'
+    id = db.Column(db.Integer, primary_key=True)
+    name =  db.Column(db.String(250))
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
+
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    content =  db.Column(db.String(250))
+    theme_id = db.Column(db.Integer, db.ForeignKey('themes.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    user = db.relationship('User', backref='comments')
+    theme = db.relationship('Theme', backref='comments')
+
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "content": self.content,
+            "theme":{
+                "id": self.theme.id,
+                "title":self.theme.title,
+                "content":self.theme.content
+                },
+            "user":{
+                "id": self.user.id,
+                "name":self.user.name,
+                "lastname":self.user.lastname,
+                "username":self.user.username
+                }
+        }
+
+
+class Like(db.Model):
+    __tablename__ = 'likes'
+    id = db.Column(db.Integer, primary_key=True)
+    theme_id = db.Column(db.Integer, db.ForeignKey('themes.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'), nullable=False)
+
+    user = db.relationship('User', backref='likes')
+    theme = db.relationship('Theme', backref='likes')
+    comment = db.relationship('Comment', backref='likes')
+
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "theme":{
+                "id": self.theme.id,
+                "title":self.theme.title,
+                "content":self.theme.content
+                },
+            "user":{
+                "id": self.user.id,
+                "name":self.user.name,
+                "lastname":self.user.lastname,
+                "username":self.user.username
+                },
+            "comment":{
+                "id": self.theme.id,
+                "content":self.theme.content
+                }
+        }
