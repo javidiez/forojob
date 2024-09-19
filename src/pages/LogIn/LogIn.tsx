@@ -29,7 +29,7 @@ export const LogIn = () => {
                     <form onSubmit={() => handleLogIn(email,password)}>
                         <div className="mb-3">
                             <label htmlFor="exampleInputEmail1" className="form-label">Email</label>
-                            <input type="email" className="form-control" placeholder="Correo electrónico" id="exampleInputEmail1" aria-describedby="emailHelp" value={email} onChange={(e) => actions.setEmail(e.target.value)}/>
+                            <input type="email" className={`form-control ${styles.input_text}`} placeholder="Correo electrónico" id="exampleInputEmail1" aria-describedby="emailHelp" value={email} onChange={(e) => actions.setEmail(e.target.value)}/>
                         </div>
                         <div className="mb-3">
                             <label htmlFor="exampleInputPassword1" className="form-label">Contraseña</label>

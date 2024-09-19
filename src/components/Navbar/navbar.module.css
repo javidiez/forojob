@@ -1,3 +1,7 @@
 .logo{
     width: clamp(10rem, 10vw, 12rem)
 }
+
+.logout{
+    cursor: pointer;
+}

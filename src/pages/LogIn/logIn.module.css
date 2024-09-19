@@ -3,3 +3,8 @@
     background-repeat: no-repeat;
     background-position: right;
 }
+
+.input_text:focus{
+    outline: none !important;
+    background-color: white !important
+}

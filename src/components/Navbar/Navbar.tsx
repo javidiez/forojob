@@ -55,16 +55,16 @@ export const Navbar = () => {
 
                             <div className="dropdown">
 
-                                <button className="btn btn-dark dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span className="material-symbols-outlined fs-5">
+                                <button className="btn btn-dark dropdown-toggle d-flex align-items-center gap-2 fs-5" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span className="material-symbols-outlined fs-4">
                                         person
                                     </span>
-                                    <span>{username}</span>
+                                    <span className="fs-5">{username}</span>
                                 </button>
                                 <ul className="dropdown-menu dropdown-menu-end">
                                     <li><a className="dropdown-item" href="#">Mi perfil</a></li>
                                     <li><a className="dropdown-item" href="#">Mis temas</a></li>
-                                    <li><a onClick={logOut} className="dropdown-item text-danger" href="#">Cerrar sesió</a></li>
+                                    <li><span onClick={logOut} className={`dropdown-item text-danger d-flex align-items-center fw-bold gap-1 ${styles.logout}`}>Cerrar sesión</span></li>
                                 </ul>
                             </div>
                         }
