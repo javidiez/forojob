@@ -41,7 +41,6 @@ export const HotThemesHome = () => {
                                     </span>
                                     <h2 >Temas populares</h2>
                                 </th>
-
                             </tr>
                         </thead>
                         <tbody>

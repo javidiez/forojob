@@ -50,6 +50,7 @@ def signup():
         'id': new_user.id,
         'username': new_user.username,
         'email': new_user.email,
+        'signup_date': new_user.signup_date.isoformat(),
         'role': new_user.role
         }), 201
 
@@ -152,7 +153,8 @@ def get_themes():
 @api.route('/add/theme', methods=['POST'])
 def add_theme():
     data = request.json
-    if 'title' not in data or 'content' not in data or 'category' not in data:
+    print(data)
+    if 'title' not in data or 'content' not in data:
         return jsonify({'error': 'Missing data'}), 400
 
     new_theme = Theme(
@@ -310,7 +312,7 @@ def add_comment():
         content=data['content'],
         author_id=data['author_id'],
         theme_id=data['theme_id']
-        
+  
     )
 
     db.session.add(new_comment)

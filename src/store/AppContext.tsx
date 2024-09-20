@@ -1,4 +1,5 @@
 import { useContext, createContext, useState, ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Definir la estructura del estado `store`
 interface Store {
@@ -21,6 +22,10 @@ interface Store {
     themeTitle: string;
     themeContent: string;
     themeCategory: string;
+    commentContent: string;
+    themeAuthor: number;
+    commentAuthor: number;
+    selectedCategory: number;
 }
 
 // Definir la estructura de las `actions`
@@ -47,12 +52,19 @@ interface Actions {
     getUsers: () => Promise<void>;
     setThemes: (themes: any[]) => void;
     addTheme: () => Promise<void>;
+    addComment: (themeId: number) => Promise<void>;
     getThemes: () => Promise<void>;
+    getCategories: () => Promise<void>;
+    getComments: () => Promise<void>;
     deleteTheme: (id:number) => Promise<void>;
     editTheme: (id:number, title:string, content:string, category:string) => Promise<void>;
     setThemeTitle: (themeTitle: string) => void;
     setThemeContent: (themeContent: string) => void;
     setThemeCategory: (themeCategory: string) => void;
+    setThemeAuthor: (themeAuthor: number) => void;
+    setCommentAuthor: (commentAuthor: number) => void;
+    setSelectedCategory: (selectedCategory: number) => void;
+    setCommentContent: (commentContent: string) => void;
 }
 
 // Definir el tipo del contexto
@@ -71,6 +83,8 @@ interface AppProviderProps {
 
 // Implementación del `AppProvider`
 export const AppProvider = ({ children }: AppProviderProps) => {
+    const navigate = useNavigate()
+
     const [users, setUsers] = useState<any[]>(() => {
         const storedUsers = localStorage.getItem('users');
         try {
@@ -134,6 +148,12 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     const [themeTitle, setThemeTitle] = useState(localStorage.getItem('themeTitle') || '')
     const [themeContent, setThemeContent] = useState(localStorage.getItem('themeContent') || '')
     const [themeCategory, setThemeCategory] = useState(localStorage.getItem('themeCategory') || '')
+    const [themeAuthor, setThemeAuthor] = useState(localStorage.getItem('themeAuthor') || '')
+    const [commentAuthor, setCommentAuthor] = useState(localStorage.getItem('commentAuthor') || '')
+    const [selectedCategory, setSelectedCategory] = useState<string>(''); // Categoría seleccionada
+    const [commentContent, setCommentContent] = useState(localStorage.getItem('commentContent') || '')
+
+    
 
     const signUp = async (username: string, email: string, password: string): Promise<void> => {
         try {
@@ -287,8 +307,10 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     }
 
     const addTheme = async () => {
+        
 		try {
 			// Enviar la solicitud POST usando fetch
+            const authorIdNumber = Number(userId);
 			const response = await fetch('http://127.0.0.1:5000/add/theme', {
 				method: 'POST',
 				headers: {
@@ -297,7 +319,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 				body: JSON.stringify({
 					title: themeTitle,
 					content: themeContent,
-					category_id: themeCategory
+					category_id: selectedCategory,
+                    author_id: authorIdNumber
 				}),
 			});
 
@@ -308,10 +331,12 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 			if (data) {
 				setThemes([...themes, data]);
 				setThemeTitle(data.title);
-				setThemeContent(data.themeContent);
-				setThemeCategory(data.themeCategory);
+				setThemeContent(data.content);
+				setThemeCategory(data.category_id);
+				setThemeAuthor(data.author_id);
+                navigate(`/theme/${data.id}`);
 			} else {
-				console.error("Token no recibido:", data);
+				console.error("Data no recibido:", data);
 			}
 		} catch (error) {
 			console.error("Network error:", error);
@@ -378,9 +403,72 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	}
 
-    const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory }
+    const getCategories = async () => {
+		try {
+			const response = await fetch('http://127.0.0.1:5000/categories');
 
-    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle }
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			setCategories([...data]);
+		} catch (error) {
+			console.error('There was an error fetching the themes!', error);
+		}
+	};
+
+    const getComments = async () => {
+		try {
+			const response = await fetch('http://127.0.0.1:5000/comments');
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			setComments([...data]);
+		} catch (error) {
+			console.error('There was an error fetching the comments!', error);
+		}
+	};
+
+    const addComment = async (themeId: number) => {
+        
+		try {
+			// Enviar la solicitud POST usando fetch
+            const authorIdNumber = Number(userId);
+			const response = await fetch('http://127.0.0.1:5000/add/comment', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					content: commentContent,
+                    theme_id: themeId,
+                    author_id: authorIdNumber
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			const data = await response.json();
+			if (data) {
+				setComments([...comments, data]);
+				setCommentContent(data.title);
+				setCommentAuthor(data.author_id);
+			} else {
+				console.error("Data no recibida:", data);
+			}
+		} catch (error) {
+			console.error("Network error:", error);
+		}
+	};
+
+    const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory, themeAuthor, selectedCategory, commentAuthor, commentContent }
+
+    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle, setThemeAuthor, getCategories, setSelectedCategory, getComments, addComment, setCommentAuthor, setCommentContent}
 
     return (
         <AppContext.Provider value={{ store, actions }}>

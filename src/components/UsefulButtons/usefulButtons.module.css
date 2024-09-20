@@ -1,0 +1,20 @@
+.bg_orange{
+    background-color: #fff;
+    border-color: #f36e0f;
+    color:#f36e0f;
+}
+
+.bg_orange:hover{
+    background-color: #f36e0f !important;
+    color: #fff;
+}
+
+.btn_orange{
+    background-color: #f36e0f !important;
+    color: #fff
+}
+
+.btn_orange:hover{
+    background-color: #d35902 !important;
+    color: #fff
+}

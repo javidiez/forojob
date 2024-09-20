@@ -1,4 +1,5 @@
 from . import db
+from datetime import datetime, timezone
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -13,6 +14,7 @@ class User(db.Model):
     role = db.Column(db.String(100), default='user')
     is_active = db.Column(db.Boolean, default=True)
     image = db.Column(db.String(250))
+    signup_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     def serialize(self):
         return {
@@ -25,7 +27,8 @@ class User(db.Model):
             "role": self.role,
             "is_active": self.is_active,
             "image": self.image,
-            "phone": self.phone
+            "phone": self.phone,
+            "signup_date": self.signup_date
         }
 
 class Theme(db.Model):
@@ -34,8 +37,9 @@ class Theme(db.Model):
     title =  db.Column(db.String(250))
     content =  db.Column(db.Text)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
-    autor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    
     user = db.relationship('User', backref='themes')
     category = db.relationship('Category', backref='themes')
 
@@ -44,26 +48,32 @@ class Theme(db.Model):
             "id": self.id,
             "title": self.title,
             "content": self.content,
+            "date": self.date,
             "category":{
                 "id": self.category.id,
+                "head": self.category.head,
                 "name":self.category.name
                 },
             "user":{
                 "id": self.user.id,
                 "name":self.user.name,
                 "lastname":self.user.lastname,
-                "username":self.user.username
+                "username":self.user.username,
+                "image": self.user.image,
+                "signup_date": self.user.signup_date
                 }
         }
 
 class Category(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
+    head = db.Column(db.String(250))
     name =  db.Column(db.String(250))
 
     def serialize(self):
         return {
             "id": self.id,
+            "head": self.head,
             "name": self.name
         }
 
@@ -72,7 +82,9 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content =  db.Column(db.String(250))
     theme_id = db.Column(db.Integer, db.ForeignKey('themes.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
 
     user = db.relationship('User', backref='comments')
     theme = db.relationship('Theme', backref='comments')
@@ -82,6 +94,7 @@ class Comment(db.Model):
         return {
             "id": self.id,
             "content": self.content,
+            "date": self.date,
             "theme":{
                 "id": self.theme.id,
                 "title":self.theme.title,
@@ -91,7 +104,8 @@ class Comment(db.Model):
                 "id": self.user.id,
                 "name":self.user.name,
                 "lastname":self.user.lastname,
-                "username":self.user.username
+                "username":self.user.username,
+                "date": self.user.signup_date
                 }
         }
 

@@ -1,0 +1,15 @@
+.avatar{
+    width: 150px;
+    object-fit: contain;
+}
+
+.btn_orange{
+    background-color: #f36e0f !important;
+    color: #fff
+}
+
+.btn_orange:hover{
+    background-color: #d35902 !important;
+    color: #fff
+}
+
