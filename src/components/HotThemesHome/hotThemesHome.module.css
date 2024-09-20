@@ -7,4 +7,14 @@
     overflow: hidden; /* Asegura que el contenido no se salga del borde redondeado */
 }
 
+.theme_link{
+    text-decoration: none;
+    
+}
+
+.theme_link:hover{
+    text-decoration: underline;
+    
+}
+
 

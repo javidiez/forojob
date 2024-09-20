@@ -44,7 +44,7 @@ export const Comments = (props: CommentsProps) => {
                                 {props.edit}
                             </div>
                             <hr />
-                            <p>{props.content.slice(3, -4)}</p>
+                            <p dangerouslySetInnerHTML={{ __html: props.content.slice(3, -4) }}/>
                         </div>
                     </div>
                 </div>

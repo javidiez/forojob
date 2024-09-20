@@ -23,10 +23,8 @@ const MyEditor = () => {
                 style={{ height: '100%', backgroundColor: "white" }} // Ajustar la altura del editor
                 modules={{
                     toolbar: [
-                        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-                        [{ 'size': ['small', false, 'large', 'huge'] }],
-                        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'indent': '-1' }, { 'indent': '+1' }],
                         ['link'],
                         ['clean']
                     ]

@@ -68,7 +68,7 @@ export const Theme = () => {
                                         <p>{theme.content.slice(3, -4)}</p>
                                     </div>
                                     <div className="mt-auto text-start"> {/* mt-auto empuja este div a la parte inferior */}
-                                        <p>Categoría: <span className="text-secondary">{theme.category.name}</span></p>
+                                        <p className="mt-5">Categoría: <span className="text-secondary">{theme.category.name}</span></p>
                                     </div>
                                 </div>
                             </div>

@@ -9,8 +9,14 @@ import { useEffect } from "react";
 export const CreateTheme = () => {
 
     const { actions, store } = useAppContext();
-    const { themeTitle, categories, themeContent } = store
+    const { themeTitle, categories, themeContent, token } = store
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!token) {
+          navigate('/login');
+        }
+      }, [token])
 
     useEffect(() => {
         actions.getCategories();

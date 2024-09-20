@@ -80,7 +80,7 @@ class Category(db.Model):
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
-    content =  db.Column(db.String(250))
+    content =  db.Column(db.Text)
     theme_id = db.Column(db.Integer, db.ForeignKey('themes.id'), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     date = db.Column(db.DateTime, default=datetime.now(timezone.utc))

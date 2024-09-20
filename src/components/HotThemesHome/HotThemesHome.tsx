@@ -1,6 +1,19 @@
 import styles from "./hotThemesHome.module.css"
+import useAppContext from "../../store/AppContext"
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+
 
 export const HotThemesHome = () => {
+
+    const { actions, store } = useAppContext();
+    const { themes } = store
+
+    useEffect(() => {
+      actions.getThemes();
+      console.log(themes)
+    }, [])
+    
 
     return (
         <div className="container mt-4">
@@ -19,20 +32,20 @@ export const HotThemesHome = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th className="" colSpan={4}>Ofertas de trabajo</th>
-                            </tr>
-                            <tr>
-                                <th className="" colSpan={4}>Ofertas de trabajo</th>
-                            </tr>
-                            <tr>
-                                <th className="" colSpan={4}>Ofertas de trabajo</th>
-                            </tr>
+                            {themes
+                            .sort((a, b) => {return new Date(b.date) - new Date(a.date);})
+                            .slice(0, 10)
+                            .map(theme => (
+                                <tr key={theme.id}>
+                                    <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark`}>{theme.title}</Link></td>
+                                </tr>
+                            ))}
+
                         </tbody>
                     </table>
                 </div>
                 <div className="col-12 col-sm-6">
-                <table className={`table table-borderles ${styles.table}`}>
+                    <table className={`table table-borderles ${styles.table}`}>
                         <thead>
                             <tr>
                                 <th colSpan={4} className={`${styles.bg_blue} text-light d-flex align-items-center gap-2`}>
