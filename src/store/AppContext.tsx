@@ -1,4 +1,4 @@
-import { useContext, createContext, useState, ReactNode } from "react";
+import { useContext, useEffect, createContext, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Definir la estructura del estado `store`
@@ -335,6 +335,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 				setThemeCategory(data.category_id);
 				setThemeAuthor(data.author_id);
                 navigate(`/theme/${data.id}`);
+                setThemeTitle('')
+                setThemeContent('')
+                setSelectedCategory('')
 			} else {
 				console.error("Data no recibido:", data);
 			}
@@ -465,6 +468,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 			console.error("Network error:", error);
 		}
 	};
+
 
     const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory, themeAuthor, selectedCategory, commentAuthor, commentContent }
 

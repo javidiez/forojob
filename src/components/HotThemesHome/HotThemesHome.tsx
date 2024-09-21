@@ -1,19 +1,19 @@
 import styles from "./hotThemesHome.module.css"
 import useAppContext from "../../store/AppContext"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 
 export const HotThemesHome = () => {
 
+
     const { actions, store } = useAppContext();
     const { themes } = store
 
     useEffect(() => {
-      actions.getThemes();
-      console.log(themes)
+        actions.getThemes();
     }, [])
-    
+
 
     return (
         <div className="container mt-4">
@@ -28,19 +28,17 @@ export const HotThemesHome = () => {
                                     </span>
                                     <h2 className="">Temas recientes</h2>
                                 </th>
-
                             </tr>
                         </thead>
                         <tbody>
                             {themes
-                            .sort((a, b) => {return new Date(b.date) - new Date(a.date);})
-                            .slice(0, 10)
-                            .map(theme => (
-                                <tr key={theme.id}>
-                                    <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark`}>{theme.title}</Link></td>
-                                </tr>
-                            ))}
-
+                                .sort((a, b) => { return new Date(b.date).getTime() - new Date(a.date).getTime(); })
+                                .slice(0, 10)
+                                .map(theme => (
+                                    <tr key={theme.id}>
+                                        <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark`}>{theme.title}</Link></td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </div>
@@ -57,15 +55,15 @@ export const HotThemesHome = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th className="" colSpan={4}>Ofertas de trabajo</th>
-                            </tr>
-                            <tr>
-                                <th className="" colSpan={4}>Ofertas de trabajo</th>
-                            </tr>
-                            <tr>
-                                <th className="" colSpan={4}>Ofertas de trabajo</th>
-                            </tr>
+                            {themes
+                            .filter(theme => theme.comments && theme.comments.length > 10)
+                                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                                .slice(0, 10)
+                                .map((theme) => (
+                                    <tr key={theme.id}>
+                                        <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark`}>{theme.title}</Link></td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </div>

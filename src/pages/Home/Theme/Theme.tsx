@@ -38,7 +38,7 @@ export const Theme = () => {
                         <div className="bg-light p-3 rounded d-flex flex-column" style={{ height: '100%' }}>
                             <div className="row flex-grow-1">
                                 <div className="col-12 col-sm-2 text-center">
-                                    <img className={styles.avatar} src={theme.user.image ? theme.user.image : avatar} alt="Avatar" />
+                                    <img className={`${styles.avatar} img-fluid`} src={theme.user.image ? theme.user.image : avatar} alt="Avatar" />
                                     <p className="fw-bold text-center fs-5 mt-2 mb-3">{theme.user.username}</p>
                                     <p>Desde: <span className="text-secondary">{new Date(theme.user.signup_date).toLocaleDateString('es-ES', {
                                         day: '2-digit',

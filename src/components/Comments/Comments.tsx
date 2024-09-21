@@ -24,7 +24,7 @@ export const Comments = (props: CommentsProps) => {
             <div className="bg-light p-3 d-flex flex-column rounded" style={{ height: '100%' }}>
                 <div className="row flex-grow-1">
                     <div className="col-12 col-sm-2 text-center border-end">
-                        <img className={styles.avatar} src={props.avatar} alt="Avatar" />
+                        <img className={`${styles.avatar} img-fluid`} src={props.avatar} alt="Avatar" />
                         <p className="fw-bold text-center fs-5 mt-2 mb-3">{props.username}</p>
                         <p>Desde: <span className="text-secondary">{new Date(props.signupDate).toLocaleDateString('es-ES', {
                             day: '2-digit',

@@ -18,9 +18,9 @@ export const Navbar = () => {
         <nav className="navbar navbar-expand-lg">
             <div className="container-fluid">
 
-                <a className="navbar-brand" href="#">
+                <Link to={'/'} className="navbar-brand">
                     <img className={styles.logo} src={logo} alt="Forojobs Logo" />
-                </a>
+                </Link>
 
 
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

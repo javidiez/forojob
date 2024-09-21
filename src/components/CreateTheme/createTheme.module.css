@@ -19,3 +19,7 @@
     background-color: #d35902 !important;
     color: #fff
 }
+
+.is_invalid {
+    border-color: red;
+}

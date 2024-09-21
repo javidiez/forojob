@@ -1,17 +1,22 @@
 import styles from "./usefulButtons.module.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAppContext from "../../store/AppContext"
 
 export const UsefulButtons = () => {
 
     const { store } = useAppContext();
     const { token } = store
+    const navigate = useNavigate();
+
+    const createTheme = () => {
+        navigate('/create-theme')
+    }
 
     return (
         <div className="container">
             <div className="bg-light d-flex p-2 gap-3 justify-content-between rounded flex-wrap">
                 <div className="d-flex gap-3">
-                    <Link to={"/create-theme"} className={`btn ${styles.btn_orange}`}>Crear tema</Link>
+                    <button onClick={createTheme} className={`btn ${styles.btn_orange}`}>Crear tema</button>
                     {token ? <button className={`btn ${styles.bg_orange}`}>Mis temas</button> : ""}
                 </div>
                 <div>

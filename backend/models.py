@@ -38,10 +38,12 @@ class Theme(db.Model):
     content =  db.Column(db.Text)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))  # Aquí se usa una lambda
     
     user = db.relationship('User', backref='themes')
     category = db.relationship('Category', backref='themes')
+    comments = db.relationship('Comment', back_populates='theme')
+
 
     def serialize(self):
         return {
@@ -61,8 +63,10 @@ class Theme(db.Model):
                 "username":self.user.username,
                 "image": self.user.image,
                 "signup_date": self.user.signup_date
-                }
+                },
+            "comments": [comment.serialize() for comment in self.comments]
         }
+
 
 class Category(db.Model):
     __tablename__ = 'categories'
@@ -87,7 +91,7 @@ class Comment(db.Model):
 
 
     user = db.relationship('User', backref='comments')
-    theme = db.relationship('Theme', backref='comments')
+    theme = db.relationship('Theme', back_populates='comments')
 
 
     def serialize(self):

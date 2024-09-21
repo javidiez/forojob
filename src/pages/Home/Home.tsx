@@ -2,9 +2,19 @@ import { CategoryBlockHome } from "../../components/CategoryBlockHome/CategoryBl
 import { HotThemesHome } from "../../components/HotThemesHome/HotThemesHome"
 import { UsefulButtons } from "../../components/UsefulButtons/UsefulButtons"
 import styles from "./home.module.css"
+import { useEffect } from "react"
+import useAppContext from "../../store/AppContext"
 
 
 export const Home = () => {
+
+    const { actions } = useAppContext();
+
+    useEffect(() => {
+        actions.getComments();
+        actions.getThemes();
+ 
+    }, [])
 
     return (
         <>
