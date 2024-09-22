@@ -30,7 +30,7 @@ export const CreateTheme = () => {
 
     const addTheme = () => {
         const cleanedContent = themeContent.replace(/<(.|\n)*?>/g, '').trim();
-        if (cleanedContent.length > 0 && selectedCategory) {
+        if (cleanedContent.length > 0 && selectedCategory && themeTitle) {
             setCategoryError(false);
             setContentError(false);
             setTitleError(false);
@@ -56,7 +56,6 @@ export const CreateTheme = () => {
             <div className="bg-light p-3 rounded">
                 <div className="row">
                     <div className="col-12">
-                        <label htmlFor="exampleInputEmail1" className="form-label fs-4">Título</label>
                         {titleError && (
                             <div className="error-message text-danger mt-2 text-nowrap">
                                 Por favor, complete el título.
@@ -78,7 +77,7 @@ export const CreateTheme = () => {
                                     onChange={(e) => {
                                         const selectedCategoryId = Number(e.target.value); // Convierte el ID a número directamente
                                         actions.setSelectedCategory(selectedCategoryId); // Asegúrate de que sea un número o undefined
-                                    }} className={`form-select ${categoryError ? `${styles.is_invalid}` : ''}`}
+                                    }} className={`form-select`}
                                     aria-label="Default select example" required
                                 >
                                     <option value="">Seleccione una categoría</option>

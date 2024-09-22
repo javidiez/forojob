@@ -13,3 +13,14 @@
     color: #fff
 }
 
+.like_blue{
+    color: #003f6f;
+    display: flex;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.bg_blue{
+    background-color: #003f6f !important;
+
+}

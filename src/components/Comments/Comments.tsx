@@ -1,7 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import useAppContext from "../../store/AppContext";
-import avatar from "../../../assets/img/avatar.png";
+import React from "react";
 import styles from "./comments.module.css";
 
 interface CommentsProps {
@@ -12,12 +9,11 @@ interface CommentsProps {
     edit: React.ReactNode;
     content: string
     userMessages: React.ReactNode;
+    badge: React.ReactNode;
 }
 
 
 export const Comments = (props: CommentsProps) => {
-
-
 
     return (
         <div className="mb-2">
@@ -25,7 +21,8 @@ export const Comments = (props: CommentsProps) => {
                 <div className="row flex-grow-1">
                     <div className="col-12 col-sm-2 text-center border-end">
                         <img className={`${styles.avatar} img-fluid`} src={props.avatar} alt="Avatar" />
-                        <p className="fw-bold text-center fs-5 mt-2 mb-3">{props.username}</p>
+                        <p className="fw-bold text-center fs-5 mt-2">{props.username}</p>
+                        {props.badge}
                         <p>Desde: <span className="text-secondary">{new Date(props.signupDate).toLocaleDateString('es-ES', {
                             day: '2-digit',
                             month: '2-digit',

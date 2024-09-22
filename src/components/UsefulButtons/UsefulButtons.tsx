@@ -13,7 +13,7 @@ export const UsefulButtons = () => {
     }
 
     return (
-        <div className="container">
+        <div className="container mt-5">
             <div className="bg-light d-flex p-2 gap-3 justify-content-between rounded flex-wrap">
                 <div className="d-flex gap-3">
                     <button onClick={createTheme} className={`btn ${styles.btn_orange}`}>Crear tema</button>

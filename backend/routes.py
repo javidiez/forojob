@@ -141,6 +141,32 @@ def edit_user(user_id):
         return jsonify({"error": str(e)}), 500
 
 
+#! DEACTIVE USER
+
+@api.route('/deactive/user/<int:user_id>', methods=['PUT'])
+def deactive_user(user_id):
+    user = User.query.get(user_id)
+
+    if user is None:
+        return jsonify({"message": "User not found"}), 404
+
+    data = request.json
+
+    if not data:
+        return jsonify({"message": "No data provided"}), 400
+
+    try:
+        if 'active' in data:
+            user.active = data['active']
+            
+        db.session.commit()
+
+        return jsonify({"message": "User activated/deactivated successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()  # Revierte los cambios en caso de error
+        return jsonify({"error": str(e)}), 500
+
 #! GET THEMES
 
 @api.route('/themes')
@@ -161,7 +187,8 @@ def add_theme():
         title=data['title'],
         content=data['content'],
         category_id=data['category_id'],
-        author_id=data['author_id']
+        author_id=data['author_id'],
+        active=True
     )
 
     db.session.add(new_theme)
@@ -219,7 +246,32 @@ def edit_theme(theme_id):
         db.session.rollback()  # Revierte los cambios en caso de error
         return jsonify({"error": str(e)}), 500
 
+#! DEACTIVE THEMES
 
+@api.route('/deactive/theme/<int:theme_id>', methods=['PUT'])
+def deactive_theme(theme_id):
+    theme = Theme.query.get(theme_id)
+
+    if theme is None:
+        return jsonify({"message": "Theme not found"}), 404
+
+    data = request.json
+
+    if not data:
+        return jsonify({"message": "No data provided"}), 400
+
+    try:
+        if 'active' in data:
+            theme.active = data['active']
+
+
+        db.session.commit()
+
+        return jsonify({"message": "Theme deactivated successfully", "theme": theme.serialize()}), 200
+
+    except Exception as e:
+        db.session.rollback()  # Revierte los cambios en caso de error
+        return jsonify({"error": str(e)}), 500
 
 #! GET CATEGORIES
 

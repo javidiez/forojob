@@ -12,7 +12,7 @@ class User(db.Model):
     birthdate = db.Column(db.Date)
     phone = db.Column(db.String(250))
     role = db.Column(db.String(100), default='user')
-    is_active = db.Column(db.Boolean, default=True)
+    active = db.Column(db.Boolean, default=True)
     image = db.Column(db.String(250))
     signup_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
@@ -25,7 +25,7 @@ class User(db.Model):
             "email": self.email,
             "birthdate": self.birthdate,
             "role": self.role,
-            "is_active": self.is_active,
+            "active": self.active,
             "image": self.image,
             "phone": self.phone,
             "signup_date": self.signup_date
@@ -39,6 +39,7 @@ class Theme(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))  # Aquí se usa una lambda
+    active = db.Column(db.Boolean, default=True, nullable=False)
     
     user = db.relationship('User', backref='themes')
     category = db.relationship('Category', backref='themes')
@@ -51,6 +52,7 @@ class Theme(db.Model):
             "title": self.title,
             "content": self.content,
             "date": self.date,
+            "active": self.active,
             "category":{
                 "id": self.category.id,
                 "head": self.category.head,
@@ -62,7 +64,8 @@ class Theme(db.Model):
                 "lastname":self.user.lastname,
                 "username":self.user.username,
                 "image": self.user.image,
-                "signup_date": self.user.signup_date
+                "signup_date": self.user.signup_date,
+                "role": self.user.role
                 },
             "comments": [comment.serialize() for comment in self.comments]
         }
@@ -109,7 +112,8 @@ class Comment(db.Model):
                 "name":self.user.name,
                 "lastname":self.user.lastname,
                 "username":self.user.username,
-                "date": self.user.signup_date
+                "date": self.user.signup_date,
+                "role":self.user.role
                 }
         }
 

@@ -24,8 +24,10 @@ interface Store {
     themeCategory: string;
     commentContent: string;
     themeAuthor: number;
+    themeActive: boolean;
     commentAuthor: number;
     selectedCategory: number;
+    categoryName: string;
 }
 
 // Definir la estructura de las `actions`
@@ -53,18 +55,25 @@ interface Actions {
     setThemes: (themes: any[]) => void;
     addTheme: () => Promise<void>;
     addComment: (themeId: number) => Promise<void>;
+    addCategory: () => Promise<void>;
     getThemes: () => Promise<void>;
     getCategories: () => Promise<void>;
     getComments: () => Promise<void>;
     deleteTheme: (id:number) => Promise<void>;
+    deleteCategory: (id:number) => Promise<void>;
+    deleteComment: (id:number) => Promise<void>;
     editTheme: (id:number, title:string, content:string, category:string) => Promise<void>;
+    deactiveTheme: (id:number, active:boolean) => Promise<void>;
+    deactiveUser: (id:number, active:boolean) => Promise<void>;
     setThemeTitle: (themeTitle: string) => void;
     setThemeContent: (themeContent: string) => void;
     setThemeCategory: (themeCategory: string) => void;
     setThemeAuthor: (themeAuthor: number) => void;
+    setThemeActive: (themeActive: boolean) => void;
     setCommentAuthor: (commentAuthor: number) => void;
     setSelectedCategory: (selectedCategory: number) => void;
     setCommentContent: (commentContent: string) => void;
+    setCategoryName: (categoryName: string) => void;
 }
 
 // Definir el tipo del contexto
@@ -149,9 +158,11 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     const [themeContent, setThemeContent] = useState(localStorage.getItem('themeContent') || '')
     const [themeCategory, setThemeCategory] = useState(localStorage.getItem('themeCategory') || '')
     const [themeAuthor, setThemeAuthor] = useState(localStorage.getItem('themeAuthor') || '')
+    const [themeActive, setThemeActive] = useState(localStorage.getItem('themeActive') || '')
     const [commentAuthor, setCommentAuthor] = useState(localStorage.getItem('commentAuthor') || '')
     const [selectedCategory, setSelectedCategory] = useState<string>(''); // Categoría seleccionada
     const [commentContent, setCommentContent] = useState(localStorage.getItem('commentContent') || '')
+    const [categoryName, setCategoryName] = useState(localStorage.getItem('categoryName') || '')
 
     
 
@@ -306,6 +317,30 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         }
     }
 
+    const deactiveUser = async (id:number, active:boolean) => {
+		try {
+			const response = await fetch(`http://127.0.0.1:5000/deactive/user/${id}`, {
+				method: "PUT",
+				body: JSON.stringify({ active }),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			// Actualiza el usuario en la lista existente
+			setUsers(users.map(user => (user.id === id ? data : user)));
+            getUsers();
+			console.log('User deactivated/activated successfully:', data);
+		} catch (error) {
+			console.error('There was an error deactivating/activating the user:', error);
+		}
+	}
+
     const addTheme = async () => {
         
 		try {
@@ -320,7 +355,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 					title: themeTitle,
 					content: themeContent,
 					category_id: selectedCategory,
-                    author_id: authorIdNumber
+                    author_id: authorIdNumber,
+                    active: themeActive
 				}),
 			});
 
@@ -334,6 +370,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 				setThemeContent(data.content);
 				setThemeCategory(data.category_id);
 				setThemeAuthor(data.author_id);
+				setThemeActive(data.active);
                 navigate(`/theme/${data.id}`);
                 setThemeTitle('')
                 setThemeContent('')
@@ -406,6 +443,30 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	}
 
+    const deactiveTheme = async (id:number, active:boolean) => {
+		try {
+			const response = await fetch(`http://127.0.0.1:5000/deactive/theme/${id}`, {
+				method: "PUT",
+				body: JSON.stringify({ active }),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			// Actualiza el usuario en la lista existente
+			setThemes(themes.map(theme => (theme.id === id ? data : theme)));
+            getThemes();
+			console.log('Theme deactivated successfully:', data);
+		} catch (error) {
+			console.error('There was an error deactivating the theme:', error);
+		}
+	}
+
     const getCategories = async () => {
 		try {
 			const response = await fetch('http://127.0.0.1:5000/categories');
@@ -418,6 +479,57 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 			setCategories([...data]);
 		} catch (error) {
 			console.error('There was an error fetching the themes!', error);
+		}
+	};
+
+    const addCategory = async () => {
+        
+		try {
+			// Enviar la solicitud POST usando fetch
+			const response = await fetch('http://127.0.0.1:5000/add/category', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					name: categoryName
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			const data = await response.json();
+			if (data) {
+				setCategories([...categories, data]);
+				setCategoryName(data.name);
+                setCategoryName('');
+			} else {
+				console.error("Data no recibido:", data);
+			}
+		} catch (error) {
+			console.error("Network error:", error);
+		}
+	};
+
+    const deleteCategory = async (id:number) => {
+		try {
+			const response = await fetch(`http://127.0.0.1:5000/delete/category/${id}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error(`Network response was not ok ${response.statusText}`);
+			}
+
+			setCategories(categories.filter(category => category.id !== id));
+
+			console.log('Category deleted successfully');
+		} catch (error) {
+			console.error('There was an error deleting category:', error);
 		}
 	};
 
@@ -469,10 +581,31 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
+    const deleteComment = async (id:number) => {
+		try {
+			const response = await fetch(`http://127.0.0.1:5000/delete/comment/${id}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
 
-    const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory, themeAuthor, selectedCategory, commentAuthor, commentContent }
+			if (!response.ok) {
+				throw new Error(`Network response was not ok ${response.statusText}`);
+			}
 
-    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle, setThemeAuthor, getCategories, setSelectedCategory, getComments, addComment, setCommentAuthor, setCommentContent}
+			setComments(comments.filter(comment => comment.id !== id));
+
+			console.log('Comment deleted successfully');
+		} catch (error) {
+			console.error('There was an error deleting comment:', error);
+		}
+	};
+
+
+    const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory, themeAuthor, selectedCategory, commentAuthor, commentContent, themeActive, categoryName }
+
+    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle, setThemeAuthor, getCategories, setSelectedCategory, getComments, addComment, setCommentAuthor, setCommentContent, setThemeActive, deactiveTheme, setCategoryName, addCategory, deleteCategory, deleteComment, deactiveUser}
 
     return (
         <AppContext.Provider value={{ store, actions }}>

@@ -5,6 +5,7 @@ import avatar from "../../../assets/img/avatar.png";
 import styles from "./theme.module.css";
 import CommentBox from "../../../components/CommentBox/CommentBox";
 import { Comments } from "../../../components/Comments/Comments";
+import { UsefulButtons } from "../../../components/UsefulButtons/UsefulButtons";
 
 export const Theme = () => {
     const { id } = useParams();
@@ -31,15 +32,24 @@ export const Theme = () => {
 
     return (
         <>
+            <UsefulButtons />
             {themes
                 .filter(theme => theme.id === themeId)
                 .map(theme => (
-                    <div className="container" key={theme.id}>
+                    <div className="container mt-4" key={theme.id}>
                         <div className="bg-light p-3 rounded d-flex flex-column" style={{ height: '100%' }}>
                             <div className="row flex-grow-1">
                                 <div className="col-12 col-sm-2 text-center">
                                     <img className={`${styles.avatar} img-fluid`} src={theme.user.image ? theme.user.image : avatar} alt="Avatar" />
-                                    <p className="fw-bold text-center fs-5 mt-2 mb-3">{theme.user.username}</p>
+                                    <p className="fw-bold text-center fs-5 mt-2">{theme.user.username}</p>
+                                    {theme.user.role === "admin" ?
+                                        <span className={`badge rounded-pill ${styles.bg_blue} mb-4`}>Administrador</span>
+                                        :
+                                        theme.user.role === "moderator" ?
+                                        <span className={`badge rounded-pill ${styles.btn_orange} mb-4`}>Moderador</span>
+                                        :
+                                        <span className={`badge rounded-pill bg-dark mb-4`}>Usuario</span>
+                                    }
                                     <p>Desde: <span className="text-secondary">{new Date(theme.user.signup_date).toLocaleDateString('es-ES', {
                                         day: '2-digit',
                                         month: '2-digit',
@@ -67,8 +77,16 @@ export const Theme = () => {
                                         <h2 className="mb-3">{theme.title}</h2>
                                         <p>{theme.content.slice(3, -4)}</p>
                                     </div>
-                                    <div className="mt-auto text-start"> {/* mt-auto empuja este div a la parte inferior */}
-                                        <p className="mt-5">Categoría: <span className="text-secondary">{theme.category.name}</span></p>
+                                    <div className="mt-auto mt-5 d-flex justify-content-between">
+                                        <div className="text-start"> {/* mt-auto empuja este div a la parte inferior */}
+                                            <p className="">Categoría: <span className="text-secondary">{theme.category.name}</span></p>
+                                        </div>
+                                        <div className={styles.like_blue}>
+                                            <p>Me gusta</p>
+                                            <span className="material-symbols-outlined">
+                                                thumb_up
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +99,14 @@ export const Theme = () => {
                         {comments
                             .filter(comment => comment.theme.id == theme.id)
                             .map(comment => (
-                                <Comments avatar={comment.user.image ? theme.user.image : avatar} username={comment.user.username} signupDate={comment.user.date} userMessages={<p>Mensajes: <span className="text-secondary">{comments
+                                <Comments badge={comment.user.role === "admin" ?
+                                    <span className={`badge rounded-pill ${styles.bg_blue} mb-4`}>Administrador</span>
+                                    :
+                                    comment.user.role === "moderator" ?
+                                    <span className={`badge rounded-pill ${styles.btn_orange} mb-4`}>Moderador</span>
+                                    :
+                                    <span className={`badge rounded-pill bg-dark mb-4`}>Usuario</span>
+                                } avatar={comment.user.image ? theme.user.image : avatar} username={comment.user.username} signupDate={comment.user.date} userMessages={<p>Mensajes: <span className="text-secondary">{comments
                                     .filter(comment => comment.user.id == theme.user.id).length
                                 }</span></p>} content={comment.content} commentDate={comment.date} edit={comment.user.id == userId ? (
                                     <span className="material-symbols-outlined">

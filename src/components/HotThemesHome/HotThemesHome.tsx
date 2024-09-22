@@ -12,6 +12,7 @@ export const HotThemesHome = () => {
 
     useEffect(() => {
         actions.getThemes();
+        console.log(themes);
     }, [])
 
 
@@ -32,11 +33,12 @@ export const HotThemesHome = () => {
                         </thead>
                         <tbody>
                             {themes
+                                .filter(theme => theme.active)
                                 .sort((a, b) => { return new Date(b.date).getTime() - new Date(a.date).getTime(); })
                                 .slice(0, 10)
                                 .map(theme => (
                                     <tr key={theme.id}>
-                                        <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark`}>{theme.title}</Link></td>
+                                        <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark ps-1`}>{theme.title}</Link></td>
                                     </tr>
                                 ))}
                         </tbody>
@@ -56,12 +58,12 @@ export const HotThemesHome = () => {
                         </thead>
                         <tbody>
                             {themes
-                            .filter(theme => theme.comments && theme.comments.length > 10)
+                                .filter(theme => theme.comments && Array.isArray(theme.comments) && theme.comments.length > 10 && theme.active)
                                 .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                                 .slice(0, 10)
                                 .map((theme) => (
                                     <tr key={theme.id}>
-                                        <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark`}>{theme.title}</Link></td>
+                                        <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark ps-1`}>{theme.title}</Link></td>
                                     </tr>
                                 ))}
                         </tbody>

@@ -6,12 +6,16 @@ import useAppContext from "../../store/AppContext"
 export const Navbar = () => {
 
     const { store, actions } = useAppContext();
-    const { username, token } = store
+    const { username, token, role } = store
     const navigate = useNavigate();
 
     const logOut = () => {
         actions.logOut();
         navigate("/")
+    }
+
+    const handleAdmin = () => {
+        navigate('/admin')
     }
 
     return (
@@ -29,12 +33,15 @@ export const Navbar = () => {
 
 
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                        
                         <li className="nav-item">
-                            <Link to="/" className="nav-link fs-4 active pe-4" aria-current="page">Inicio</Link>
+                            <Link to="/" className="nav-link fs-4 active pe-3" aria-current="page">Inicio</Link>
                         </li>
+                        {token && role === "admin" ? <li  className="nav-item pe-3 d-flex align-items-center"><button className={`${styles.bg_blue} btn text-light p-2`} onClick={handleAdmin}>Administrador</button></li> : ""}
                     </ul>
-
+                    
 
                     <div className="d-flex gap-2">
                         {!token ?
