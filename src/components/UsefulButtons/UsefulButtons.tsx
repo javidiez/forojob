@@ -17,7 +17,12 @@ export const UsefulButtons = () => {
             <div className="bg-light d-flex p-2 gap-3 justify-content-between rounded flex-wrap">
                 <div className="d-flex gap-3">
                     <button onClick={createTheme} className={`btn ${styles.btn_orange}`}>Crear tema</button>
-                    {token ? <button className={`btn ${styles.bg_orange}`}>Mis temas</button> : ""}
+                    {token ?
+                        <>
+                            <button className={`btn ${styles.bg_orange}`}>Mis temas</button>
+                            <button className={`btn ${styles.bg_orange}`}>Temas favoritos</button>
+                        </>
+                        : ""}
                 </div>
                 <div>
                     <form className="d-flex" role="search">

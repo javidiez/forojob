@@ -44,6 +44,7 @@ class Theme(db.Model):
     user = db.relationship('User', backref='themes')
     category = db.relationship('Category', backref='themes')
     comments = db.relationship('Comment', back_populates='theme')
+    likes = db.relationship('Like', back_populates='theme')
 
 
     def serialize(self):
@@ -67,7 +68,8 @@ class Theme(db.Model):
                 "signup_date": self.user.signup_date,
                 "role": self.user.role
                 },
-            "comments": [comment.serialize() for comment in self.comments]
+            "comments": [comment.serialize() for comment in self.comments],
+            "likes": [like.serialize() for like in self.likes] 
         }
 
 
@@ -123,17 +125,13 @@ class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     theme_id = db.Column(db.Integer, db.ForeignKey('themes.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'), nullable=False)
 
     user = db.relationship('User', backref='likes')
-    theme = db.relationship('Theme', backref='likes')
-    comment = db.relationship('Comment', backref='likes')
-
+    theme = db.relationship('Theme', back_populates='likes')
 
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name,
             "theme":{
                 "id": self.theme.id,
                 "title":self.theme.title,
@@ -144,9 +142,5 @@ class Like(db.Model):
                 "name":self.user.name,
                 "lastname":self.user.lastname,
                 "username":self.user.username
-                },
-            "comment":{
-                "id": self.theme.id,
-                "content":self.theme.content
                 }
         }

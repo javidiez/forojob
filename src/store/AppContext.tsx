@@ -28,6 +28,10 @@ interface Store {
     commentAuthor: number;
     selectedCategory: number;
     categoryName: string;
+    likeUser: number;
+    likeTheme: number;
+    likeComment: number;
+    themeId: number;
 }
 
 // Definir la estructura de las `actions`
@@ -56,10 +60,13 @@ interface Actions {
     addTheme: () => Promise<void>;
     addComment: (themeId: number) => Promise<void>;
     addCategory: () => Promise<void>;
+    addLike: (themeId: number) => Promise<void>;
     getThemes: () => Promise<void>;
     getCategories: () => Promise<void>;
+    getLikes: () => Promise<void>;
     getComments: () => Promise<void>;
     deleteTheme: (id:number) => Promise<void>;
+    deleteLike: (id:number) => Promise<void>;
     deleteCategory: (id:number) => Promise<void>;
     deleteComment: (id:number) => Promise<void>;
     editTheme: (id:number, title:string, content:string, category:string) => Promise<void>;
@@ -74,6 +81,10 @@ interface Actions {
     setSelectedCategory: (selectedCategory: number) => void;
     setCommentContent: (commentContent: string) => void;
     setCategoryName: (categoryName: string) => void;
+    setLikeUser: (likeUser: number) => void;
+    setLikeTheme: (likeTheme: number) => void;
+    setLikeComment: (likeComment: number) => void;
+    setThemeId: (themeId: number) => void;
 }
 
 // Definir el tipo del contexto
@@ -163,6 +174,10 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     const [selectedCategory, setSelectedCategory] = useState<string>(''); // Categoría seleccionada
     const [commentContent, setCommentContent] = useState(localStorage.getItem('commentContent') || '')
     const [categoryName, setCategoryName] = useState(localStorage.getItem('categoryName') || '')
+    const [likeUser, setLikeUser] = useState(localStorage.getItem('likeUser') || '')
+    const [likeTheme, setLikeTheme] = useState(localStorage.getItem('likeTheme') || '')
+    const [likeComment, setLikeComment] = useState(localStorage.getItem('likeComment') || '')
+    const [themeId, setThemeId] = useState(localStorage.getItem('themeId') || '')
 
     
 
@@ -371,6 +386,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 				setThemeCategory(data.category_id);
 				setThemeAuthor(data.author_id);
 				setThemeActive(data.active);
+                setThemeId(data.id);
                 navigate(`/theme/${data.id}`);
                 setThemeTitle('')
                 setThemeContent('')
@@ -602,10 +618,78 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
+    const getLikes = async () => {
+		try {
+			const response = await fetch('http://127.0.0.1:5000/likes');
 
-    const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory, themeAuthor, selectedCategory, commentAuthor, commentContent, themeActive, categoryName }
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
 
-    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle, setThemeAuthor, getCategories, setSelectedCategory, getComments, addComment, setCommentAuthor, setCommentContent, setThemeActive, deactiveTheme, setCategoryName, addCategory, deleteCategory, deleteComment, deactiveUser}
+			const data = await response.json();
+			setLikes([...data]);
+		} catch (error) {
+			console.error('There was an error fetching the likes!', error);
+		}
+	};
+
+    const addLike = async (themeId: number) => {
+        
+		try {
+			// Enviar la solicitud POST usando fetch
+            const authorIdNumber = Number(userId);
+			const response = await fetch('http://127.0.0.1:5000/add/like', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					user_id: authorIdNumber,
+                    theme_id: themeId
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			const data = await response.json();
+			if (data) {
+				setLikes([...likes, data]);
+				setLikeUser(data.user_id);
+				setLikeTheme(data.theme_id);
+			} else {
+				console.error("Data no recibido:", data);
+			}
+		} catch (error) {
+			console.error("Network error:", error);
+		}
+	};
+
+    const deleteLike = async (id:number) => {
+		try {
+			const response = await fetch(`http://127.0.0.1:5000/delete/like/${id}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error(`Network response was not ok ${response.statusText}`);
+			}
+
+			setLikes(likes.filter(like => like.id !== id));
+
+			console.log('Like deleted successfully');
+		} catch (error) {
+			console.error('There was an error deleting like:', error);
+		}
+	};
+
+
+    const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory, themeAuthor, selectedCategory, commentAuthor, commentContent, themeActive, categoryName, likeUser, likeTheme, likeComment, themeId }
+
+    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle, setThemeAuthor, getCategories, setSelectedCategory, getComments, addComment, setCommentAuthor, setCommentContent, setThemeActive, deactiveTheme, setCategoryName, addCategory, deleteCategory, deleteComment, deactiveUser, addLike, setLikeComment, setLikeTheme, setLikeUser, getLikes, deleteLike, setThemeId}
 
     return (
         <AppContext.Provider value={{ store, actions }}>

@@ -17,7 +17,7 @@ body {
   background-color: rgb(161, 161, 161);
 }
 
-h1, h2, h3, h4, h5, h6, a, p, span, div, table {
+h1, h2, h3, h4, h5, h6, a, p, span, div, table, hr {
   margin:0;
   padding: 0;
 }

@@ -431,20 +431,19 @@ def get_likes():
 @api.route('/add/like', methods=['POST'])
 def add_like():
     data = request.json
-    if 'content' not in data:
+    if 'user_id' not in data:
         return jsonify({'error': 'Missing data'}), 400
 
     new_like = Like(
         user_id=data['user_id'],
-        theme_id=data['theme_id'],
-        comment_id=data['comment_id']
+        theme_id=data['theme_id']
     )
 
     db.session.add(new_like)
     db.session.commit()
 
     return jsonify({
-        "msg": "Like creado exitosamente",
+        "msg": "Like agregado exitosamente",
         **new_like.serialize()}), 201
 
 #! DELETE LIKES

@@ -18,9 +18,9 @@
     display: flex;
     gap: 5px;
     cursor: pointer;
+    align-items: center;
 }
 
 .bg_blue{
     background-color: #003f6f !important;
-
 }

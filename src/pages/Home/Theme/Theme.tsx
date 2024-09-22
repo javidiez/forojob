@@ -10,12 +10,12 @@ import { UsefulButtons } from "../../../components/UsefulButtons/UsefulButtons";
 export const Theme = () => {
     const { id } = useParams();
     const { actions, store } = useAppContext();
-    const { themes, userId, comments, commentContent } = store;
-    const navigate = useNavigate();
+    const { themes, userId, comments, commentContent, likes } = store;
 
     useEffect(() => {
         actions.getThemes();
         actions.getComments();
+        actions.getLikes();
     }, []);
 
     const addComment = (themeId: number) => {
@@ -30,6 +30,20 @@ export const Theme = () => {
 
     const themeId = Number(id); // Convierte el id a número
 
+
+    const addLike = async (theme_id: number) => {
+        await actions.addLike(theme_id);
+        const updatedFavData = await actions.getLikes();
+        const isFavorited = Array.isArray(updatedFavData) && updatedFavData.some(fav => fav.theme.id === themeId && userId === fav.user.id);
+    };
+    //Elimina un favorito de la lista
+    const deleteLike = async (favId:number) => {
+        await actions.deleteLike(favId);
+        const updatedFavData = await actions.getLikes();
+        const isFavorited = Array.isArray(updatedFavData) && updatedFavData.some(fav => fav.theme.id === themeId && userId === fav.user.id);
+    };
+    const isFavorited = Array.isArray(likes) && likes.some(fav => fav.theme.id === themeId );
+
     return (
         <>
             <UsefulButtons />
@@ -39,16 +53,16 @@ export const Theme = () => {
                     <div className="container mt-4" key={theme.id}>
                         <div className="bg-light p-3 rounded d-flex flex-column" style={{ height: '100%' }}>
                             <div className="row flex-grow-1">
-                                <div className="col-12 col-sm-2 text-center">
+                                <div className="col-12 col-sm-2 text-center border-end">
                                     <img className={`${styles.avatar} img-fluid`} src={theme.user.image ? theme.user.image : avatar} alt="Avatar" />
                                     <p className="fw-bold text-center fs-5 mt-2">{theme.user.username}</p>
                                     {theme.user.role === "admin" ?
                                         <span className={`badge rounded-pill ${styles.bg_blue} mb-4`}>Administrador</span>
                                         :
                                         theme.user.role === "moderator" ?
-                                        <span className={`badge rounded-pill ${styles.btn_orange} mb-4`}>Moderador</span>
-                                        :
-                                        <span className={`badge rounded-pill bg-dark mb-4`}>Usuario</span>
+                                            <span className={`badge rounded-pill ${styles.btn_orange} mb-4`}>Moderador</span>
+                                            :
+                                            <span className={`badge rounded-pill bg-dark mb-4`}>Usuario</span>
                                     }
                                     <p>Desde: <span className="text-secondary">{new Date(theme.user.signup_date).toLocaleDateString('es-ES', {
                                         day: '2-digit',
@@ -61,8 +75,8 @@ export const Theme = () => {
                                 </div>
                                 <div className="col-12 col-sm-10 d-flex flex-column">
                                     <div>
-                                        <div className="d-flex justify-content-between">
-                                            <p className="text-secondary">{new Date(theme.date).toLocaleDateString('es-ES', {
+                                        <div className="d-flex justify-content-between mb-1">
+                                            <p className={`text-secondary ${styles.date}`}>{new Date(theme.date).toLocaleDateString('es-ES', {
                                                 day: '2-digit',
                                                 month: '2-digit',
                                                 year: 'numeric'
@@ -74,7 +88,7 @@ export const Theme = () => {
                                             ) : ""}
                                         </div>
                                         <hr />
-                                        <h2 className="mb-3">{theme.title}</h2>
+                                        <h2 className="mb-3 mt-3">{theme.title}</h2>
                                         <p>{theme.content.slice(3, -4)}</p>
                                     </div>
                                     <div className="mt-auto mt-5 d-flex justify-content-between">
@@ -82,10 +96,35 @@ export const Theme = () => {
                                             <p className="">Categoría: <span className="text-secondary">{theme.category.name}</span></p>
                                         </div>
                                         <div className={styles.like_blue}>
-                                            <p>Me gusta</p>
-                                            <span className="material-symbols-outlined">
-                                                thumb_up
-                                            </span>
+                                            {(
+                                                isFavorited ? (
+                                                    <div className="d-flex gap-2 fs-5" onClick={() => {
+                                                        const favId = likes.find(fav => fav.theme.id === themeId && fav.user.id == userId );
+                                                        if (favId) deleteLike(favId.id);
+                                                    }}>
+                                                        <p>Ya no me gusta</p>
+                                                        <span
+                                                            className="bi bi-hand-thumbs-up-fill"
+                                                        ></span>
+                                                        {likes
+                                                        .filter(like => like.theme.id === themeId).length
+                                                        }
+                                                    </div>
+                                                ) : (
+                                                    <div className="d-flex gap-2 fs-5" onClick={() => addLike(theme.id)}>
+                                                        <p>Me gusta</p>
+                                                        <span
+                                                            className="bi bi-hand-thumbs-up"
+                                                        ></span>
+                                                        {likes
+                                                        .filter(like => like.theme.id === themeId).length
+                                                        }
+                                                    </div>
+                                                )
+                                            )}
+
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -103,9 +142,9 @@ export const Theme = () => {
                                     <span className={`badge rounded-pill ${styles.bg_blue} mb-4`}>Administrador</span>
                                     :
                                     comment.user.role === "moderator" ?
-                                    <span className={`badge rounded-pill ${styles.btn_orange} mb-4`}>Moderador</span>
-                                    :
-                                    <span className={`badge rounded-pill bg-dark mb-4`}>Usuario</span>
+                                        <span className={`badge rounded-pill ${styles.btn_orange} mb-4`}>Moderador</span>
+                                        :
+                                        <span className={`badge rounded-pill bg-dark mb-4`}>Usuario</span>
                                 } avatar={comment.user.image ? theme.user.image : avatar} username={comment.user.username} signupDate={comment.user.date} userMessages={<p>Mensajes: <span className="text-secondary">{comments
                                     .filter(comment => comment.user.id == theme.user.id).length
                                 }</span></p>} content={comment.content} commentDate={comment.date} edit={comment.user.id == userId ? (
