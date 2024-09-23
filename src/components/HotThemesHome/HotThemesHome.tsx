@@ -12,7 +12,6 @@ export const HotThemesHome = () => {
 
     useEffect(() => {
         actions.getThemes();
-        console.log(themes);
     }, [])
 
 

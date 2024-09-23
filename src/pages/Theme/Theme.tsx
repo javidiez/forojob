@@ -1,11 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import useAppContext from "../../../store/AppContext";
-import avatar from "../../../assets/img/avatar.png";
+import useAppContext from "../../store/AppContext";
+import avatar from "../../assets/img/avatar.png"
 import styles from "./theme.module.css";
-import CommentBox from "../../../components/CommentBox/CommentBox";
-import { Comments } from "../../../components/Comments/Comments";
-import { UsefulButtons } from "../../../components/UsefulButtons/UsefulButtons";
+import CommentBox from "../../components/CommentBox/CommentBox";
+import { Comments } from "../../components/Comments/Comments";
+import { UsefulButtons } from "../../components/UsefulButtons/UsefulButtons";
 
 export const Theme = () => {
     const { id } = useParams();
@@ -34,15 +34,15 @@ export const Theme = () => {
     const addLike = async (theme_id: number) => {
         await actions.addLike(theme_id);
         const updatedFavData = await actions.getLikes();
-        const isFavorited = Array.isArray(updatedFavData) && updatedFavData.some(fav => fav.theme.id === themeId && userId === fav.user.id);
+        const isFavorited = Array.isArray(updatedFavData) && updatedFavData.some(fav => fav.theme.id == themeId && userId == fav.user.id);
     };
     //Elimina un favorito de la lista
     const deleteLike = async (favId:number) => {
         await actions.deleteLike(favId);
         const updatedFavData = await actions.getLikes();
-        const isFavorited = Array.isArray(updatedFavData) && updatedFavData.some(fav => fav.theme.id === themeId && userId === fav.user.id);
+        const isFavorited = Array.isArray(updatedFavData) && updatedFavData.some(fav => fav.theme.id == themeId && userId == fav.user.id);
     };
-    const isFavorited = Array.isArray(likes) && likes.some(fav => fav.theme.id === themeId );
+    const isFavorited = Array.isArray(likes) && likes.some(fav => fav.theme.id == themeId && userId == fav.user.id);
 
     return (
         <>

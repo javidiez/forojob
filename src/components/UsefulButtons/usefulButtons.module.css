@@ -18,3 +18,13 @@
     background-color: #d35902 !important;
     color: #fff
 }
+
+.bg_blue{
+    background-color: #003f6f !important;
+    font-size: 1.1rem;
+}
+
+.bg_blue:hover{
+    background-color: #004f8b !important;
+}
+

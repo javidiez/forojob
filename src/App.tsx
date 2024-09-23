@@ -7,8 +7,10 @@ import { LogIn } from "./pages/LogIn/LogIn";
 import { SignUp } from "./pages/SignUp/SignUp";
 import { AppProvider } from "./store/AppContext";
 import { CreateTheme } from "./components/CreateTheme/CreateTheme";
-import { Theme } from "./pages/Home/Theme/Theme";
+import { Theme } from "./pages/Theme/Theme";
 import { Admin } from "./pages/Admin/Admin";
+import { MyThemes } from "./pages/MyThemes/MyThemes";
+import { FavoriteTheme } from "./pages/FavoritesThemes/FavoritesThemes";
 
 const App = () => {
 
@@ -34,6 +36,8 @@ const App = () => {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/create-theme" element={<CreateTheme />} />
             <Route path="/theme/:id" element={<Theme />} />
+            <Route path="/my-themes" element={<MyThemes />} />
+            <Route path="/favorite-themes" element={<FavoriteTheme />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFoundRedirect />} />
           </Routes>

@@ -1,0 +1,23 @@
+.bg_blue{
+    background-color: #003f6f !important;
+}
+
+.table {
+    border-radius: 15px !important; /* Bordes redondeados */
+    overflow: hidden; /* Asegura que el contenido no se salga del borde redondeado */
+}
+
+.theme_link {
+    text-decoration: none;
+    display: inline-block;
+    white-space: nowrap;      /* Mantiene el texto en una sola línea */
+    overflow: hidden;         /* Oculta el texto que se sale del contenedor */
+    text-overflow: ellipsis;  /* Añade los puntos suspensivos (...) */
+    width: clamp(20em, 32vw, 50rem);        /* Ajusta este valor al ancho que desees */
+  }
+
+.theme_link:hover{
+    text-decoration: underline;
+    
+}
+

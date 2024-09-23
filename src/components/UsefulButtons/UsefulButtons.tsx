@@ -12,15 +12,23 @@ export const UsefulButtons = () => {
         navigate('/create-theme')
     }
 
+    const myThemes = () => {
+        navigate('/my-themes')
+    }
+
+    const favorteThemes = () => {
+        navigate('/favorite-themes')
+    }
+
     return (
         <div className="container mt-5">
             <div className="bg-light d-flex p-2 gap-3 justify-content-between rounded flex-wrap">
                 <div className="d-flex gap-3">
-                    <button onClick={createTheme} className={`btn ${styles.btn_orange}`}>Crear tema</button>
+                    <button onClick={createTheme} className={`btn ${styles.bg_blue} text-light`}>Crear tema</button>
                     {token ?
                         <>
-                            <button className={`btn ${styles.bg_orange}`}>Mis temas</button>
-                            <button className={`btn ${styles.bg_orange}`}>Temas favoritos</button>
+                            <button onClick={myThemes} className={`btn ${styles.btn_orange}`}>Mis temas</button>
+                            <button onClick={favorteThemes} className={`btn ${styles.btn_orange}`}>Temas favoritos</button>
                         </>
                         : ""}
                 </div>
