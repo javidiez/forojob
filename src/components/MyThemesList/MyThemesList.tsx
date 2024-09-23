@@ -28,7 +28,7 @@ export const MyThemesList = () => {
                             <tr>
                                 <th className={`${styles.bg_blue} text-light d-flex align-items-center gap-2`}>
                                     <span className="material-symbols-outlined fs-3">
-                                        timer
+                                        3p
                                     </span>
                                     <h2 className="">Mis temas</h2>
                                 </th>

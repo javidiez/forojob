@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 export const ThemeFavorite = () => {
 
     const { actions, store } = useAppContext();
-    const { themes, userId } = store
+    const { themes, userId, likes } = store
 
     useEffect(() => {
         actions.getThemes();
@@ -17,9 +17,10 @@ export const ThemeFavorite = () => {
 
 
     const favoriteThemes =
-        themes
-            .filter(theme => theme.active && theme.user.id == userId)
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    themes
+        .filter(theme => theme.active && 
+            likes.some(like => like.theme.id === theme.id && like.user.id == userId))  // Verificamos si el usuario ha dado like a este tema
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 
     return (
@@ -31,7 +32,7 @@ export const ThemeFavorite = () => {
                             <tr>
                                 <th className={`${styles.bg_blue} text-light d-flex align-items-center gap-2`}>
                                     <span className="material-symbols-outlined fs-3">
-                                        timer
+                                        thumb_up
                                     </span>
                                     <h2 className="">Temas favoritos</h2>
                                 </th>

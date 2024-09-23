@@ -42,8 +42,10 @@
 .bg_blue{
     background-color: #003f6f !important;
     font-size: 1.1rem;
+    color: #fff
 }
 
 .bg_blue:hover{
     background-color: #004f8b !important;
+    color: #fff
 }

@@ -47,6 +47,15 @@ export const Admin = () => {
         actions.deactiveUser(userId, true);
     }
 
+    const editCategory = (categoryId:number, categoryName:string) => {
+        actions.editCategory(categoryId, categoryName);
+        
+    }
+
+    const openEditModal = (category) => {
+        actions.setCategoryName(category.name);
+    };
+
 
     return (
         <div className="container mt-5">
@@ -116,7 +125,7 @@ export const Admin = () => {
                                                                         </div>
                                                                         <div className="modal-footer">
                                                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                                            <button onClick={() => deactivateTheme(theme.id)} type="button" className="btn btn-warning" data-bs-dismiss="modal">Desactivar</button>
+                                                                            <button onClick={() => deactivateTheme(theme.id)} type="button" className={`btn ${styles.btn_admin}`} data-bs-dismiss="modal">Desactivar</button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -142,7 +151,7 @@ export const Admin = () => {
                                                                         </div>
                                                                         <div className="modal-footer">
                                                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                                            <button onClick={() => activeTheme(theme.id)} type="button" className="btn btn-success" data-bs-dismiss="modal">Activar</button>
+                                                                            <button onClick={() => activeTheme(theme.id)} type="button" className={`btn ${styles.bg_blue}`} data-bs-dismiss="modal">Activar</button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -170,7 +179,7 @@ export const Admin = () => {
                                                                 </div>
                                                                 <div className="modal-footer">
                                                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                                    <button onClick={() => deleteTheme(theme.id)} type="button" className="btn btn-danger" data-bs-dismiss="modal">Eliminar</button>
+                                                                    <button onClick={() => deleteTheme(theme.id)} type="button" className={`btn ${styles.bg_blue}`} data-bs-dismiss="modal">Eliminar</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -221,16 +230,16 @@ export const Admin = () => {
                                                         <div className="modal-dialog">
                                                             <div className="modal-content">
                                                                 <div className="modal-header">
-                                                                    <h1 className="modal-title fs-5" id="exampleModalLabel">¿Desea eliminar la categoría?</h1>
+                                                                    <h1 className="modal-title fs-5" id="exampleModalLabel">¿Desea eliminar el comentario?</h1>
                                                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
                                                                 <div className="modal-body text-start">
-                                                                    <p className='fs-5 fw-bold'>Categoía:</p>
+                                                                    <p className='fs-5 fw-bold mb-2'>Comentario:</p>
                                                                     <p className='text-wrap'>{comment.content.slice(3, -4)}</p>
                                                                 </div>
                                                                 <div className="modal-footer">
                                                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                                    <button onClick={() => deleteComment(comment.id)} type="button" className="btn btn-danger" data-bs-dismiss="modal">Eliminar</button>
+                                                                    <button onClick={() => deleteComment(comment.id)} type="button" className={`btn ${styles.bg_blue}`} data-bs-dismiss="modal">Eliminar</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -260,18 +269,20 @@ export const Admin = () => {
                                 </thead>
                                 <tbody>
                                     {users
+                                        .filter(user => user.username)
+                                        .sort((a, b) => a.username.localeCompare(b.username))
                                         .map((user, index) => (
                                             <tr key={user.id}  >
                                                 <td className='fw-bold'>{index + 1}</td>
                                                 <td className='fw-bold'><img src={user.image} /></td>
-                                                <td className={`text-start ${user.active === false ? `text-secondary` : ""}`}>{user.name} {user.lastname}</td>
-                                                <td className={`text-start ${user.active === false ? `text-secondary` : ""}`}>{user.username ? user.username : ""}</td>
-                                                <td  className={`text-start ${user.active === false ? `text-secondary` : ""}`}>{user.birthdate ? new Date(user.birthdate).toLocaleDateString('es-ES', {
+                                                <td className={`text-start ${user.active === false ? `text-danger` : ""}`}>{user.name} {user.lastname}</td>
+                                                <td className={`text-start ${user.active === false ? `text-danger` : ""}`}>{user.username ? user.username : ""}</td>
+                                                <td  className={`text-start ${user.active === false ? `text-danger` : ""}`}>{user.birthdate ? new Date(user.birthdate).toLocaleDateString('es-ES', {
                                                     day: '2-digit',
                                                     month: '2-digit',
                                                     year: 'numeric'
                                                 }) : "Indefinida"}</td>
-                                                <td  className={`text-start ${user.active === false ? `text-secondary` : ""}`}>{user.role}</td>
+                                                <td  className={`text-start ${user.active === false ? `text-danger` : ""}`}>{user.role}</td>
                                                 <td className={`text-end text-nowrap ${styles.cursor_pointer}`}>
                                                     <span className="material-symbols-outlined pe-2">
                                                         edit
@@ -295,7 +306,7 @@ export const Admin = () => {
                                                                         </div>
                                                                         <div className="modal-footer">
                                                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                                            <button onClick={() => deactiveUser(user.id)} type="button" className="btn btn-warning" data-bs-dismiss="modal">Banear</button>
+                                                                            <button onClick={() => deactiveUser(user.id)} type="button" className={`btn ${styles.btn_admin}`} data-bs-dismiss="modal">Banear</button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -316,12 +327,12 @@ export const Admin = () => {
                                                                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                         </div>
                                                                         <div className="modal-body text-start">
-                                                                            <p className='fs-5 fw-bold mb-3'>El siguiente usuario volvera a estar activo:</p>
+                                                                            <p className='fs-5 fw-bold mb-3'>El siguiente usuario volverá a estar activo:</p>
                                                                             <p className='text-wrap'>{user.username}</p>
                                                                         </div>
                                                                         <div className="modal-footer">
                                                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                                            <button onClick={() => activeUser(user.id)} type="button" className="btn btn-success" data-bs-dismiss="modal">Activar</button>
+                                                                            <button onClick={() => activeUser(user.id)} type="button" className={`btn ${styles.bg_blue}`} data-bs-dismiss="modal">Activar</button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -376,14 +387,35 @@ export const Admin = () => {
                                 </thead>
                                 <tbody>
                                     {categories
+                                        .filter(category => category.name)
+                                        .sort((a,b) => a.name.localeCompare(b.name))
                                         .map((category, index) => (
                                             <tr key={category.id}>
                                                 <td className='fw-bold'>{index + 1}</td>
                                                 <td className="text-start">{category.name}</td>
                                                 <td className={`text-end text-nowrap ${styles.cursor_pointer}`}>
-                                                    <span className="material-symbols-outlined pe-2">
+                                                    <span className="material-symbols-outlined pe-2"  data-bs-toggle="modal" data-bs-target={`#modalEditCategory${category.id}`} onClick={() => openEditModal(category)}>
                                                         edit
                                                     </span>
+
+                                                    <div className="modal fade" id={`modalEditCategory${category.id}`} tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div className="modal-dialog">
+                                                            <div className="modal-content">
+                                                                <div className="modal-header">
+                                                                    <h1 className="modal-title fs-5" id="exampleModalLabel">Editar Categoría</h1>
+                                                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div className="modal-body text-start">
+                                                                    <input type="text" className='form-control' value={categoryName} onChange={(e) => actions.setCategoryName(e.target.value)}/>
+                                                                </div>
+                                                                <div className="modal-footer">
+                                                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                                    <button onClick={() => editCategory(category.id, categoryName)} type="button" className={`btn ${styles.bg_blue}`}  data-bs-dismiss="modal">Editar</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                     <span className="material-symbols-outlined" data-bs-toggle="modal" data-bs-target={`#modalCategory${category.id}`}>
                                                         delete
                                                     </span>
@@ -396,12 +428,12 @@ export const Admin = () => {
                                                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
                                                                 <div className="modal-body text-start">
-                                                                    <p className='fs-5 fw-bold'>Categoía:</p>
+                                                                    <p className='fs-5 fw-bold mb-2'>Categoría:</p>
                                                                     <p className='text-wrap'>{category.name}</p>
                                                                 </div>
                                                                 <div className="modal-footer">
                                                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                                    <button onClick={() => deleteCategory(category.id)} type="button" className="btn btn-danger" data-bs-dismiss="modal">Eliminar</button>
+                                                                    <button onClick={() => deleteCategory(category.id)} type="button" className={`btn ${styles.bg_blue}`}  data-bs-dismiss="modal">Eliminar</button>
                                                                 </div>
                                                             </div>
                                                         </div>

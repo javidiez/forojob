@@ -55,6 +55,7 @@ interface Actions {
     setBirthdate: (birthdate: string) => void;
     setUserPhone: (userPhone: string) => void;
     editUser: (name: string, lastname: string, phone: string, image: string, birthdate: Date) => Promise<void>;
+    editCategory: (id:number, name: string) => Promise<void>;
     getUsers: () => Promise<void>;
     setThemes: (themes: any[]) => void;
     addTheme: () => Promise<void>;
@@ -70,6 +71,7 @@ interface Actions {
     deleteCategory: (id:number) => Promise<void>;
     deleteComment: (id:number) => Promise<void>;
     editTheme: (id:number, title:string, content:string, category:string) => Promise<void>;
+    editComment: (id:number, content:string) => Promise<void>;
     deactiveTheme: (id:number, active:boolean) => Promise<void>;
     deactiveUser: (id:number, active:boolean) => Promise<void>;
     setThemeTitle: (themeTitle: string) => void;
@@ -178,9 +180,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     const [likeTheme, setLikeTheme] = useState(localStorage.getItem('likeTheme') || '')
     const [likeComment, setLikeComment] = useState(localStorage.getItem('likeComment') || '')
     const [themeId, setThemeId] = useState(localStorage.getItem('themeId') || '')
-
     
-
     const signUp = async (username: string, email: string, password: string): Promise<void> => {
         try {
             // Enviar la solicitud POST usando fetch
@@ -332,7 +332,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         }
     }
 
-    const deactiveUser = async (id:number, active:boolean) => {
+    const deactiveUser = async (id:number, active:boolean): Promise<void> => {
 		try {
 			const response = await fetch(`http://127.0.0.1:5000/deactive/user/${id}`, {
 				method: "PUT",
@@ -356,7 +356,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	}
 
-    const addTheme = async () => {
+    const addTheme = async (): Promise<void> => {
         
 		try {
 			// Enviar la solicitud POST usando fetch
@@ -399,7 +399,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-	const getThemes = async () => {
+	const getThemes = async (): Promise<void> => {
 		try {
 			const response = await fetch('http://127.0.0.1:5000/themes');
 
@@ -414,7 +414,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-	const deleteTheme = async (id:number) => {
+	const deleteTheme = async (id:number): Promise<void> => {
 		try {
 			const response = await fetch(`http://127.0.0.1:5000/delete/theme/${id}`, {
 				method: 'DELETE',
@@ -435,7 +435,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-	const editTheme = async (id:number, title:string, content:string, category:string) => {
+	const editTheme = async (id:number, title:string, content:string, category:string): Promise<void> => {
 		try {
 			const response = await fetch(`http://127.0.0.1:5000/edit/theme/${id}`, {
 				method: "PUT",
@@ -459,7 +459,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	}
 
-    const deactiveTheme = async (id:number, active:boolean) => {
+    const deactiveTheme = async (id:number, active:boolean): Promise<void> => {
 		try {
 			const response = await fetch(`http://127.0.0.1:5000/deactive/theme/${id}`, {
 				method: "PUT",
@@ -483,7 +483,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	}
 
-    const getCategories = async () => {
+    const getCategories = async (): Promise<void> => {
 		try {
 			const response = await fetch('http://127.0.0.1:5000/categories');
 
@@ -498,7 +498,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-    const addCategory = async () => {
+    const addCategory = async (): Promise<void> => {
         
 		try {
 			// Enviar la solicitud POST usando fetch
@@ -528,7 +528,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-    const deleteCategory = async (id:number) => {
+    const deleteCategory = async (id:number): Promise<void> => {
 		try {
 			const response = await fetch(`http://127.0.0.1:5000/delete/category/${id}`, {
 				method: 'DELETE',
@@ -549,7 +549,31 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-    const getComments = async () => {
+    const editCategory = async (id:number, name:string): Promise<void> => {
+		try {
+			const response = await fetch(`http://127.0.0.1:5000/edit/category/${id}`, {
+				method: "PUT",
+				body: JSON.stringify({ name }),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			// Actualiza el usuario en la lista existente
+			setCategories(categories.map(category => (category.id === id ? data : category)));
+            getCategories()
+			console.log('Category updated successfully:', data);
+		} catch (error) {
+			console.error('There was an error updating the category:', error);
+		}
+	}
+
+    const getComments = async (): Promise<void> => {
 		try {
 			const response = await fetch('http://127.0.0.1:5000/comments');
 
@@ -564,7 +588,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-    const addComment = async (themeId: number) => {
+    const addComment = async (themeId: number): Promise<void> => {
         
 		try {
 			// Enviar la solicitud POST usando fetch
@@ -597,7 +621,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-    const deleteComment = async (id:number) => {
+    const deleteComment = async (id:number): Promise<void> => {
 		try {
 			const response = await fetch(`http://127.0.0.1:5000/delete/comment/${id}`, {
 				method: 'DELETE',
@@ -618,7 +642,31 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-    const getLikes = async () => {
+    const editComment = async (id:number, content:string): Promise<void> => {
+		try {
+			const response = await fetch(`http://127.0.0.1:5000/edit/comment/${id}`, {
+				method: "PUT",
+				body: JSON.stringify({ content }),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			// Actualiza el usuario en la lista existente
+			setComments(comments.map(comment => (comment.id === id ? data : comment)));
+
+			console.log('Comment updated successfully:', data);
+		} catch (error) {
+			console.error('There was an error updating the comment:', error);
+		}
+	}
+
+    const getLikes = async (): Promise<void> => {
 		try {
 			const response = await fetch('http://127.0.0.1:5000/likes');
 
@@ -633,7 +681,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-    const addLike = async (themeId: number) => {
+    const addLike = async (themeId: number): Promise<void> => {
         
 		try {
 			// Enviar la solicitud POST usando fetch
@@ -665,7 +713,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
-    const deleteLike = async (id:number) => {
+    const deleteLike = async (id:number): Promise<void> => {
 		try {
 			const response = await fetch(`http://127.0.0.1:5000/delete/like/${id}`, {
 				method: 'DELETE',
@@ -689,7 +737,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 
     const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory, themeAuthor, selectedCategory, commentAuthor, commentContent, themeActive, categoryName, likeUser, likeTheme, likeComment, themeId }
 
-    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle, setThemeAuthor, getCategories, setSelectedCategory, getComments, addComment, setCommentAuthor, setCommentContent, setThemeActive, deactiveTheme, setCategoryName, addCategory, deleteCategory, deleteComment, deactiveUser, addLike, setLikeComment, setLikeTheme, setLikeUser, getLikes, deleteLike, setThemeId}
+    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle, setThemeAuthor, getCategories, setSelectedCategory, getComments, addComment, setCommentAuthor, setCommentContent, setThemeActive, deactiveTheme, setCategoryName, addCategory, deleteCategory, deleteComment, deactiveUser, addLike, setLikeComment, setLikeTheme, setLikeUser, getLikes, deleteLike, setThemeId, editCategory, editComment}
 
     return (
         <AppContext.Provider value={{ store, actions }}>
