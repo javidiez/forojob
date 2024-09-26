@@ -13,7 +13,7 @@ interface Store {
     token: string;
     userId: string;
     userImage: string;
-    birthdate: string;
+    birthdate: Date;
     userPhone: string;
     comments: any[];
     likes: any[];
@@ -32,6 +32,7 @@ interface Store {
     likeTheme: number;
     likeComment: number;
     themeId: number;
+    categoryHead: string;
 }
 
 // Definir la estructura de las `actions`
@@ -52,16 +53,19 @@ interface Actions {
     setComments: (comments: any[]) => void;
     setLikes: (likes: any[]) => void;
     setUserImage: (userImage: string) => void;
-    setBirthdate: (birthdate: string) => void;
+    setBirthdate: (birthdate: Date) => void;
     setUserPhone: (userPhone: string) => void;
-    editUser: (name: string, lastname: string, phone: string, image: string, birthdate: Date) => Promise<void>;
+    editUser: (name: string, lastname: string, phone: string, birthdate: Date) => Promise<void>;
+    editUserImage: (image: string) => Promise<void>;
     editCategory: (id:number, name: string) => Promise<void>;
     getUsers: () => Promise<void>;
     setThemes: (themes: any[]) => void;
     addTheme: () => Promise<void>;
+    addUserImage: () => Promise<void>;
     addComment: (themeId: number) => Promise<void>;
     addCategory: () => Promise<void>;
     addLike: (themeId: number) => Promise<void>;
+    addImages: (image: string) => Promise<void>;
     getThemes: () => Promise<void>;
     getCategories: () => Promise<void>;
     getLikes: () => Promise<void>;
@@ -87,6 +91,7 @@ interface Actions {
     setLikeTheme: (likeTheme: number) => void;
     setLikeComment: (likeComment: number) => void;
     setThemeId: (themeId: number) => void;
+    setCategoryHead: (categoryHead: string) => void;
 }
 
 // Definir el tipo del contexto
@@ -180,6 +185,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     const [likeTheme, setLikeTheme] = useState(localStorage.getItem('likeTheme') || '')
     const [likeComment, setLikeComment] = useState(localStorage.getItem('likeComment') || '')
     const [themeId, setThemeId] = useState(localStorage.getItem('themeId') || '')
+    const [categoryHead, setCategoryHead] = useState(localStorage.getItem('categoryHead') || '')
     
     const signUp = async (username: string, email: string, password: string): Promise<void> => {
         try {
@@ -306,13 +312,13 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         }
     };
 
-    const editUser = async (name: string, lastname: string, phone: string, image: string, birthdate: Date): Promise<void> => {
+    const editUser = async (name: string, lastname: string, phone: string, birthdate: Date): Promise<void> => {
         try {
-            const body = JSON.stringify({ name, lastname, phone, image, birthdate });
+            const body = JSON.stringify({ name, lastname, phone, birthdate });
             console.log('Payload being sent:', body);
             const response = await fetch(`http://127.0.0.1:5000/edit/user/${userId}`, {
                 method: "PUT",
-                body: JSON.stringify({ name, lastname, phone, image, birthdate }),
+                body: JSON.stringify({ name, lastname, phone, birthdate }),
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -325,7 +331,63 @@ export const AppProvider = ({ children }: AppProviderProps) => {
             const data = await response.json();
             // Actualiza el usuario en la lista existente
             setUsers(users.map(user => (user.id === userId ? data : user)));
+            getUsers();
+            console.log('User updated successfully:', data);
+        } catch (error) {
+            console.error('There was an error updating the user:', error);
+        }
+    }
 
+    const addUserImage = async (): Promise<void> => {
+        
+		try {
+			// Enviar la solicitud POST usando fetch
+			const response = await fetch(`http://127.0.0.1:5000/add/user/image`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					image: userImage,
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			const data = await response.json();
+			if (data) {
+				setUsers([...users, data]);
+				setUserImage(data.image);
+			} else {
+				console.error("Data no recibido:", data);
+			}
+		} catch (error) {
+			console.error("Network error:", error);
+		}
+	};
+
+    const editUserImage = async (image:string): Promise<void> => {
+        try {
+            const body = JSON.stringify({ image });
+            console.log('Payload being sent:', body);
+            const response = await fetch(`http://127.0.0.1:5000/edit/user/image/${userId}`, {
+                method: "PUT",
+                body: JSON.stringify({ image: userImage }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            // Actualiza el usuario en la lista existente
+            setUsers(users.map(user => (user.id === userId ? data : user)));
+            setUserImage(data.image)
+            getUsers();
             console.log('User updated successfully:', data);
         } catch (error) {
             console.error('There was an error updating the user:', error);
@@ -508,7 +570,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					name: categoryName
+					name: categoryName,
+                    head: categoryHead
 				}),
 			});
 
@@ -519,7 +582,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 			if (data) {
 				setCategories([...categories, data]);
 				setCategoryName(data.name);
+				setCategoryHead(data.head);
                 setCategoryName('');
+                setCategoryHead('');
 			} else {
 				console.error("Data no recibido:", data);
 			}
@@ -734,10 +799,33 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		}
 	};
 
+    const addImages = async (formData: string) => {
+		try {
 
-    const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory, themeAuthor, selectedCategory, commentAuthor, commentContent, themeActive, categoryName, likeUser, likeTheme, likeComment, themeId }
+			const response = await fetch(`http://127.0.0.1:5000/upload/image`, {
+				method: 'POST',
+				body: formData
+			});
 
-    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle, setThemeAuthor, getCategories, setSelectedCategory, getComments, addComment, setCommentAuthor, setCommentContent, setThemeActive, deactiveTheme, setCategoryName, addCategory, deleteCategory, deleteComment, deactiveUser, addLike, setLikeComment, setLikeTheme, setLikeUser, getLikes, deleteLike, setThemeId, editCategory, editComment}
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			// Cuando obtiene la respuesta el response se pasa a formato json y lo guarda en fotosubida
+			// Se hace el return de fotosubida
+			const fotosubida = await response.json();
+			return fotosubida; //
+		}
+		catch (error) {
+			console.error("Network error:", error);
+			return null;
+		}
+	};
+
+
+    const store = { users, name, email, password, username, lastname, role, token, userId, userImage, birthdate, userPhone, comments, likes, categories, themes, themeTitle, themeContent, themeCategory, themeAuthor, selectedCategory, commentAuthor, commentContent, themeActive, categoryName, likeUser, likeTheme, likeComment, themeId, categoryHead }
+
+    const actions = { signUp, logIn, logOut, setName, setUsername, setLastname, setRole, setEmail, setPassword, setToken, setUserId, setUsers, setCategories, setComments, setLikes, setUserImage, setBirthdate, setUserPhone, editUser, getUsers, setThemes, addTheme, editTheme, getThemes, deleteTheme, setThemeCategory, setThemeContent, setThemeTitle, setThemeAuthor, getCategories, setSelectedCategory, getComments, addComment, setCommentAuthor, setCommentContent, setThemeActive, deactiveTheme, setCategoryName, addCategory, deleteCategory, deleteComment, deactiveUser, addLike, setLikeComment, setLikeTheme, setLikeUser, getLikes, deleteLike, setThemeId, editCategory, editComment, editUserImage, addImages, addUserImage, setCategoryHead}
 
     return (
         <AppContext.Provider value={{ store, actions }}>

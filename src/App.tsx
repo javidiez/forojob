@@ -11,6 +11,9 @@ import { Theme } from "./pages/Theme/Theme";
 import { Admin } from "./pages/Admin/Admin";
 import { MyThemes } from "./pages/MyThemes/MyThemes";
 import { FavoriteTheme } from "./pages/FavoritesThemes/FavoritesThemes";
+import { Profile } from "./pages/Profile/Profile";
+import { SearchThemes } from "./pages/SearchThemes/SearchThemes";
+import { CategoryThemes } from "./pages/CategoryThemes/CategoryThemes";
 
 const App = () => {
 
@@ -38,6 +41,9 @@ const App = () => {
             <Route path="/theme/:id" element={<Theme />} />
             <Route path="/my-themes" element={<MyThemes />} />
             <Route path="/favorite-themes" element={<FavoriteTheme />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/search-themes" element={<SearchThemes />} />
+            <Route path="/category-themes/:id" element={<CategoryThemes />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFoundRedirect />} />
           </Routes>

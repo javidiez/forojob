@@ -37,7 +37,27 @@ export const HotThemesHome = () => {
                                 .slice(0, 10)
                                 .map(theme => (
                                     <tr key={theme.id}>
-                                        <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark ps-1`}>{theme.title}</Link></td>
+                                        
+                                        <td colSpan={4} className="d-flex">
+                                        {theme.category.head === "Empleo" ? <span className="material-symbols-outlined">
+                                                work
+                                            </span>
+                                                :
+                                                theme.category.head === "Curriculum Vitae" ?
+                                                    <span className="material-symbols-outlined">
+                                                        description
+                                                    </span>
+                                                    :
+                                                    theme.category.head === "Capacitación" ?
+                                                        <span className="material-symbols-outlined">
+                                                            school
+                                                        </span>
+                                                        :
+                                                        <span className="material-symbols-outlined">
+                                                            forum
+                                                        </span>
+                                            }
+                                            <Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark ps-1`}>{theme.title}</Link></td>
                                     </tr>
                                 ))}
                         </tbody>
@@ -57,12 +77,32 @@ export const HotThemesHome = () => {
                         </thead>
                         <tbody>
                             {themes
-                                .filter(theme => theme.comments && Array.isArray(theme.comments) && theme.comments.length > 10 && theme.active)
+                                .filter(theme => theme.comments && Array.isArray(theme.comments) && theme.comments.length > 1 && theme.active)
                                 .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                                 .slice(0, 10)
                                 .map((theme) => (
                                     <tr key={theme.id}>
-                                        <td colSpan={4}><Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark ps-1`}>{theme.title}</Link></td>
+                                        <td colSpan={4} className="d-flex">
+                                            {theme.category.head === "Empleo" ? <span className="material-symbols-outlined">
+                                                work
+                                            </span>
+                                                :
+                                                theme.category.head === "Curriculum Vitae" ?
+                                                    <span className="material-symbols-outlined">
+                                                        description
+                                                    </span>
+                                                    :
+                                                    theme.category.head === "Capacitación" ?
+                                                        <span className="material-symbols-outlined">
+                                                            school
+                                                        </span>
+                                                        :
+                                                        <span className="material-symbols-outlined">
+                                                            forum
+                                                        </span>
+                                            }
+
+                                            <Link to={`/theme/${theme.id}`} className={`${styles.theme_link} text-dark ps-1`}>{theme.title}</Link></td>
                                     </tr>
                                 ))}
                         </tbody>

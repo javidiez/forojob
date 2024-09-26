@@ -3,6 +3,7 @@ import styles from "./createTheme.module.css";
 import { Link, useNavigate } from "react-router-dom"
 import useAppContext from "../../store/AppContext"
 import { useEffect, useState } from "react";
+import { UsefulButtons } from "../UsefulButtons/UsefulButtons";
 
 
 
@@ -52,8 +53,10 @@ export const CreateTheme = () => {
     };
 
     return (
-        <div className="container">
-            <div className="bg-light p-3 rounded">
+        <>
+            <UsefulButtons/>
+            <div className="container mb-3">
+            <div className="bg-light p-3 rounded mt-3">
                 <div className="row">
                     <div className="col-12">
                         {titleError && (
@@ -70,7 +73,7 @@ export const CreateTheme = () => {
                             </div>
                         )}
                         <MyEditor />
-                        <div className="d-flex mt-4 justify-content-between">
+                        <div className="d-flex mt-4 justify-content-between flex-wrap gap-3">
                             <div className="d-flex align-items-center gap-2">
                                 <p className="text-nowrap">Seleccione una Categoría</p>
                                 <select
@@ -83,7 +86,7 @@ export const CreateTheme = () => {
                                     <option value="">Seleccione una categoría</option>
                                     {categories.map((category) => (
                                         <option key={category.id} value={category.id}>
-                                            {category.name}
+                                            {category.name} ({category.head})
                                         </option>
                                     ))}
                                 </select>
@@ -106,5 +109,6 @@ export const CreateTheme = () => {
             </div>
 
         </div>
+        </>
     )
 }

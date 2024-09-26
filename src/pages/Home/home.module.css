@@ -2,3 +2,13 @@
     border-radius: 10px 10px 0px 0px;
     background-color: rgb(36, 36, 36);
 }
+
+.theme_link {
+    text-decoration: none;
+  }
+
+.theme_link:hover{
+    text-decoration: underline;
+    cursor: pointer;
+    
+}

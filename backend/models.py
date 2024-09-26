@@ -115,7 +115,8 @@ class Comment(db.Model):
                 "lastname":self.user.lastname,
                 "username":self.user.username,
                 "date": self.user.signup_date,
-                "role":self.user.role
+                "role":self.user.role,
+                "image": self.user.image
                 }
         }
 

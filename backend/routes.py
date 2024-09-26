@@ -125,8 +125,6 @@ def edit_user(user_id):
             user.name = data['name']
         if 'lastname' in data:
             user.lastname = data['lastname']
-        if 'image' in data:
-            user.image = data['image']
         if 'birthdate'in data:
             user.birthdate = data['birthdate']
         if 'phone' in data:
@@ -135,6 +133,33 @@ def edit_user(user_id):
         db.session.commit()
 
         return jsonify({"message": "User updated successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()  # Revierte los cambios en caso de error
+        return jsonify({"error": str(e)}), 500
+
+
+#! EDIT USER IMAGE
+
+@api.route('/edit/user/image/<int:user_id>', methods=['PUT'])
+def edit_user_image(user_id):
+    user = User.query.get(user_id)
+
+    if user is None:
+        return jsonify({"message": "User not found"}), 404
+
+    data = request.json
+
+    if not data:
+        return jsonify({"message": "No data provided"}), 400
+
+    try:
+        if 'image' in data:
+            user.image = data['image']
+
+        db.session.commit()
+
+        return jsonify({"message": "User image updated successfully"}), 200
 
     except Exception as e:
         db.session.rollback()  # Revierte los cambios en caso de error
@@ -289,7 +314,8 @@ def add_category():
         return jsonify({'error': 'Missing data'}), 400
 
     new_category = Category(
-        name=data['name']
+        name=data['name'],
+        head=data['head']
     )
 
     db.session.add(new_category)
@@ -462,3 +488,15 @@ def delete_like(like_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+
+#! ADD IMAGE CLOUDINARY
+
+@api.route('/upload/image', methods=['POST'])
+def add_image():
+    file_to_upload = request.files['file']
+    if file_to_upload:
+        upload = cloudinary.uploader.upload(file_to_upload)
+        print('-------------la url donde esta la imagen-------------', upload)
+        return jsonify(upload)
+    return jsonify({"error": "No file uploaded"}), 400

@@ -2,11 +2,12 @@ import styles from './admin.module.css'
 import useAppContext from "../../store/AppContext"
 import { useEffect } from "react";
 import { Link } from 'react-router-dom';
+import avatar from '../../assets/img/avatar.png'
 
 export const Admin = () => {
 
     const { actions, store } = useAppContext();
-    const { themes, comments, users, categories, categoryName } = store
+    const { themes, comments, users, categories, categoryName, categoryHead } = store
 
     useEffect(() => {
         actions.getThemes();
@@ -48,11 +49,10 @@ export const Admin = () => {
     }
 
     const editCategory = (categoryId:number, categoryName:string) => {
-        actions.editCategory(categoryId, categoryName);
-        
+        actions.editCategory(categoryId, categoryName);   
     }
 
-    const openEditModal = (category) => {
+    const openEditModal = (category:any) => {
         actions.setCategoryName(category.name);
     };
 
@@ -273,17 +273,17 @@ export const Admin = () => {
                                         .sort((a, b) => a.username.localeCompare(b.username))
                                         .map((user, index) => (
                                             <tr key={user.id}  >
-                                                <td className='fw-bold'>{index + 1}</td>
-                                                <td className='fw-bold'><img src={user.image} /></td>
-                                                <td className={`text-start ${user.active === false ? `text-danger` : ""}`}>{user.name} {user.lastname}</td>
-                                                <td className={`text-start ${user.active === false ? `text-danger` : ""}`}>{user.username ? user.username : ""}</td>
-                                                <td  className={`text-start ${user.active === false ? `text-danger` : ""}`}>{user.birthdate ? new Date(user.birthdate).toLocaleDateString('es-ES', {
+                                                <td className='fw-bold align-middle'>{index + 1}</td>
+                                                <td className='fw-bold align-middle'><img src={user.image ? user.image : avatar} className={styles.img_user} /></td>
+                                                <td className={`text-start align-middle ${user.active === false ? `text-danger` : ""}`}>{user.name} {user.lastname}</td>
+                                                <td className={`text-start align-middle ${user.active === false ? `text-danger` : ""}`}>{user.username ? user.username : ""}</td>
+                                                <td  className={`text-start align-middle ${user.active === false ? `text-danger` : ""}`}>{user.birthdate ? new Date(user.birthdate).toLocaleDateString('es-ES', {
                                                     day: '2-digit',
                                                     month: '2-digit',
                                                     year: 'numeric'
                                                 }) : "Indefinida"}</td>
-                                                <td  className={`text-start ${user.active === false ? `text-danger` : ""}`}>{user.role}</td>
-                                                <td className={`text-end text-nowrap ${styles.cursor_pointer}`}>
+                                                <td  className={`text-start align-middle ${user.active === false ? `text-danger` : ""}`}>{user.role}</td>
+                                                <td className={`text-end text-nowrap align-middle ${styles.cursor_pointer}`}>
                                                     <span className="material-symbols-outlined pe-2">
                                                         edit
                                                     </span>
@@ -364,7 +364,9 @@ export const Admin = () => {
                                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div className="modal-body">
-                                            <input placeholder='Nombre de la categoría' className='form-control' type='text' value={categoryName} onChange={(e) => actions.setCategoryName(e.target.value)} />
+                                            <input placeholder='Nombre de la categoría' className='form-control mb-3' type='text' value={categoryName} onChange={(e) => actions.setCategoryName(e.target.value)} />
+                                            <input placeholder='Nombre de la categoría padre' className='form-control' type='text' value={categoryHead} onChange={(e) => actions.setCategoryHead(e.target.value)} />
+
                                         </div>
                                         <div className="modal-footer">
                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -382,6 +384,7 @@ export const Admin = () => {
                                     <tr>
                                         <th className=''>#</th>
                                         <th className=''>Nombre</th>
+                                        <th className=''>Categoría padre</th>
                                         <th className=''></th>
                                     </tr>
                                 </thead>
@@ -393,6 +396,7 @@ export const Admin = () => {
                                             <tr key={category.id}>
                                                 <td className='fw-bold'>{index + 1}</td>
                                                 <td className="text-start">{category.name}</td>
+                                                <td className="text-start">{category.head}</td>
                                                 <td className={`text-end text-nowrap ${styles.cursor_pointer}`}>
                                                     <span className="material-symbols-outlined pe-2"  data-bs-toggle="modal" data-bs-target={`#modalEditCategory${category.id}`} onClick={() => openEditModal(category)}>
                                                         edit

@@ -37,7 +37,7 @@ export const Theme = () => {
         const isFavorited = Array.isArray(updatedFavData) && updatedFavData.some(fav => fav.theme.id == themeId && userId == fav.user.id);
     };
     //Elimina un favorito de la lista
-    const deleteLike = async (favId:number) => {
+    const deleteLike = async (favId: number) => {
         await actions.deleteLike(favId);
         const updatedFavData = await actions.getLikes();
         const isFavorited = Array.isArray(updatedFavData) && updatedFavData.some(fav => fav.theme.id == themeId && userId == fav.user.id);
@@ -89,17 +89,17 @@ export const Theme = () => {
                                         </div>
                                         <hr />
                                         <h2 className="mb-3 mt-3">{theme.title}</h2>
-                                        <p>{theme.content.slice(3, -4)}</p>
+                                        <p dangerouslySetInnerHTML={{ __html: theme.content.slice(3, -4) }}></p>
                                     </div>
-                                    <div className="mt-auto mt-5 d-flex justify-content-between">
-                                        <div className="text-start"> {/* mt-auto empuja este div a la parte inferior */}
-                                            <p className="">Categoría: <span className="text-secondary">{theme.category.name}</span></p>
+                                    <div className="mt-auto d-flex justify-content-between">
+                                        <div className="text-start">
+                                            <p className="mt-4">Categoría: <span className="text-secondary">{theme.category.name}</span></p>
                                         </div>
                                         <div className={styles.like_blue}>
                                             {(
                                                 isFavorited ? (
                                                     <div className="d-flex gap-2 fs-5" onClick={() => {
-                                                        const favId = likes.find(fav => fav.theme.id === themeId && fav.user.id == userId );
+                                                        const favId = likes.find(fav => fav.theme.id === themeId && fav.user.id == userId);
                                                         if (favId) deleteLike(favId.id);
                                                     }}>
                                                         <p>Ya no me gusta</p>
@@ -107,7 +107,7 @@ export const Theme = () => {
                                                             className="bi bi-hand-thumbs-up-fill"
                                                         ></span>
                                                         {likes
-                                                        .filter(like => like.theme.id === themeId).length
+                                                            .filter(like => like.theme.id === themeId).length
                                                         }
                                                     </div>
                                                 ) : (
@@ -117,7 +117,7 @@ export const Theme = () => {
                                                             className="bi bi-hand-thumbs-up"
                                                         ></span>
                                                         {likes
-                                                        .filter(like => like.theme.id === themeId).length
+                                                            .filter(like => like.theme.id === themeId).length
                                                         }
                                                     </div>
                                                 )
@@ -136,25 +136,43 @@ export const Theme = () => {
                             <button onClick={() => addComment(theme.id)} className={`btn ${styles.btn_orange} mt-3`}>Comentar</button>
                         </div>
                         {comments
-                            .filter(comment => comment.theme.id == theme.id)
-                            .map(comment => (
-                                <Comments badge={comment.user.role === "admin" ?
-                                    <span className={`badge rounded-pill ${styles.bg_blue} mb-4`}>Administrador</span>
-                                    :
-                                    comment.user.role === "moderator" ?
-                                        <span className={`badge rounded-pill ${styles.btn_orange} mb-4`}>Moderador</span>
-                                        :
-                                        <span className={`badge rounded-pill bg-dark mb-4`}>Usuario</span>
-                                } avatar={comment.user.image ? theme.user.image : avatar} username={comment.user.username} signupDate={comment.user.date} userMessages={<p>Mensajes: <span className="text-secondary">{comments
-                                    .filter(comment => comment.user.id == theme.user.id).length
-                                }</span></p>} content={comment.content} commentDate={comment.date} edit={comment.user.id == userId ? (
-                                    <span className="material-symbols-outlined">
-                                        edit
-                                    </span>
-                                ) : ""} />
-                            ))
+                            .filter(comment => comment.theme.id === theme.id)
+                            .map(comment => {
+                                // Contar el número de comentarios del usuario actual
+                                const userCommentCount = comments
+                                    .filter(c => c.user.id == comment.user.id).length;
 
+                                return (
+                                    <Comments
+                                        badge={comment.user.role === "admin" ?
+                                            <span className={`badge rounded-pill ${styles.bg_blue} mb-4`}>Administrador</span>
+                                            :
+                                            comment.user.role === "moderator" ?
+                                                <span className={`badge rounded-pill ${styles.btn_orange} mb-4`}>Moderador</span>
+                                                :
+                                                <span className={`badge rounded-pill bg-dark mb-4`}>Usuario</span>
+                                        }
+                                        avatar={comment.user.image ? comment.user.image : avatar}  // Usar el avatar del usuario del comentario
+                                        username={comment.user.username}
+                                        signupDate={comment.user.date}
+
+                                        // Mostrar la cantidad de comentarios del usuario en este tema
+                                        userMessages={<p>Mensajes: <span className="text-secondary">{userCommentCount}</span></p>}
+
+                                        content={comment.content}
+                                        commentDate={comment.date}
+
+                                        // Mostrar el botón de editar si el usuario actual es el dueño del comentario
+                                        edit={comment.user.id === userId ? (
+                                            <span className="material-symbols-outlined">
+                                                edit
+                                            </span>
+                                        ) : ""}
+                                    />
+                                );
+                            })
                         }
+
                     </div>
                 ))}
         </>

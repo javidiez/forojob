@@ -1,6 +1,7 @@
 .avatar{
     width: 150px;
     object-fit: contain;
+    border-radius: 50%;
 }
 
 .btn_orange{

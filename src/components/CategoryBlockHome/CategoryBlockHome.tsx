@@ -1,8 +1,8 @@
 import styles from "./categoryBlockHome.module.css"
 
 interface CategoryBlockHomeProps {
-    title: string;
-    category: string;
+    title: React.ReactNode;
+    category: React.ReactNode;
     subCategories: string
 }
 
@@ -19,15 +19,7 @@ export const CategoryBlockHome = (props: CategoryBlockHomeProps) => {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th className="fs-5" colSpan={4}>Ofertas de trabajo</th>
-                </tr>
-                <tr>
-                <th className="fs-5" colSpan={4}>Ofertas de trabajo</th>
-                </tr>
-                <tr>
-                <th className="fs-5" colSpan={4}>Ofertas de trabajo</th>
-                </tr>
+                {props.category}
             </tbody>
         </table>
     )

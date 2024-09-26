@@ -69,8 +69,8 @@ export const Navbar = () => {
                                     <span className="fs-5">{username}</span>
                                 </button>
                                 <ul className="dropdown-menu dropdown-menu-end">
-                                    <li><a className="dropdown-item" href="#">Mi perfil</a></li>
-                                    <li><a className="dropdown-item" href="#">Mis temas</a></li>
+                                    <li><Link to="/profile" className="dropdown-item">Mi perfil</Link></li>
+                                    <li><Link to="/my-themes" className="dropdown-item">Mis temas</Link></li>
                                     <li><span onClick={logOut} className={`dropdown-item text-danger d-flex align-items-center fw-bold gap-1 ${styles.logout}`}>Cerrar sesión</span></li>
                                 </ul>
                             </div>
