@@ -16,7 +16,7 @@ interface CommentsProps {
 export const Comments = (props: CommentsProps) => {
 
     return (
-        <div className="mb-2">
+        <div className="mt-2">
             <div className="bg-light p-3 d-flex flex-column rounded" style={{ height: '100%' }}>
                 <div className="row flex-grow-1">
                     <div className="col-12 col-sm-2 text-center border-end">

@@ -8,11 +8,6 @@ const CommentBox = () => {
     const { actions, store } = useAppContext();
     const { commentContent } = store
 
-    const isValidComment = (content: string): boolean => {
-        const cleanedContent = content.replace(/<(.|\n)*?>/g, '').trim(); // Elimina todas las etiquetas HTML y espacios en blanco
-        return cleanedContent.length > 0;
-    };
-
     const setCommentContent = (content: string) => {
         actions.setCommentContent(content); // Asegúrate de que esta acción esté definida en tu contexto
     };

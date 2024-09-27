@@ -23,11 +23,18 @@ export const UsefulButtons = () => {
     }
 
     const handleSearch = () => {
-        const queryParams = new URLSearchParams(filters).toString();
-        if(filters){
-        navigate(`/search-themes?${queryParams}`);
+        // Solo navegar si hay un valor de búsqueda
+        if (filters) {
+            navigate(`/search-themes?query=${filters}`);  // Incluimos los filtros en la URL como query params
         }
-      };
+    };
+
+    const handleKeyDown = (e:any) => {
+        if(e.key === "Enter"){
+            e.preventDefault();
+            handleSearch();
+        }
+    }
 
     return (
         <div className="container mt-5">
@@ -42,9 +49,9 @@ export const UsefulButtons = () => {
                         : ""}
                 </div>
                 <div>
-                    <form className="d-flex" role="search">
-                        <input className="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
-                        <button className={`btn ${styles.btn_orange}`} type="button" onClick={handleSearch}>Buscar</button>
+                    <form className="d-flex">
+                        <input value={filters} onChange={(e) => setFilters(e.target.value)} onKeyDown={handleKeyDown} className="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                        <button className={`btn ${styles.btn_orange}`} type="button" onClick={handleSearch} >Buscar</button>
                     </form>
                 </div>
             </div>

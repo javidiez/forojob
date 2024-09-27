@@ -514,7 +514,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 			const data = await response.json();
 			// Actualiza el usuario en la lista existente
 			setThemes(themes.map(theme => (theme.id === id ? data : theme)));
-
+            getThemes();
 			console.log('Theme updated successfully:', data);
 		} catch (error) {
 			console.error('There was an error updating the theme:', error);

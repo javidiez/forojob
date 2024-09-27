@@ -14,25 +14,27 @@ import { FavoriteTheme } from "./pages/FavoritesThemes/FavoritesThemes";
 import { Profile } from "./pages/Profile/Profile";
 import { SearchThemes } from "./pages/SearchThemes/SearchThemes";
 import { CategoryThemes } from "./pages/CategoryThemes/CategoryThemes";
+import { Footer } from "./components/Footer/Footer";
 
 const App = () => {
 
   const NotFoundRedirect = () => {
     const navigate = useNavigate();
 
-    useEffect(() => {
-      // Redirige a la página de perfil si la ruta no existe
-      navigate('/');
-    }, [navigate]);
+    // useEffect(() => {
+    //   // Redirige a la página de perfil si la ruta no existe
+    //   navigate('/');
+    // }, [navigate]);
 
     return null;
   };
 
   return (
-    <div>
+    <div className="app-container">
       <Router>
-        <AppProvider>
-          <Navbar />
+      <AppProvider>
+        <Navbar />
+        <div className="content">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LogIn />} />
@@ -47,6 +49,8 @@ const App = () => {
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFoundRedirect />} />
           </Routes>
+          </div>
+          <Footer/>
         </AppProvider>
       </Router>
 

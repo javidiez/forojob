@@ -10,7 +10,7 @@ import { UsefulButtons } from "../../components/UsefulButtons/UsefulButtons";
 export const Theme = () => {
     const { id } = useParams();
     const { actions, store } = useAppContext();
-    const { themes, userId, comments, commentContent, likes } = store;
+    const { themes, userId, comments, commentContent, likes, token, themeTitle, themeContent, themeCategory } = store;
 
     useEffect(() => {
         actions.getThemes();
@@ -23,8 +23,7 @@ export const Theme = () => {
         if (cleanedContent.length > 0) {
             actions.addComment(themeId);
         } else {
-            console.error('El comentario está vacío o no contiene texto significativo.');
-            alert('El comentario no puede estar vacío.'); // También podrías usar un mensaje de error visible en la interfaz.
+            alert('El comentario no puede estar vacío.');
         }
     }
 
@@ -43,6 +42,17 @@ export const Theme = () => {
         const isFavorited = Array.isArray(updatedFavData) && updatedFavData.some(fav => fav.theme.id == themeId && userId == fav.user.id);
     };
     const isFavorited = Array.isArray(likes) && likes.some(fav => fav.theme.id == themeId && userId == fav.user.id);
+
+    const editTheme = (id: number, title: string, content: string, category: string) => {
+        actions.editTheme(id, title, content, category);
+    }
+
+    const openEditModal = (theme:any) => {
+        actions.setThemeTitle(theme.title);
+        actions.setThemeContent(theme.content.slice(3, -4));
+        actions.setThemeCategory(theme.category.name);
+    };
+
 
     return (
         <>
@@ -82,9 +92,36 @@ export const Theme = () => {
                                                 year: 'numeric'
                                             })}</p>
                                             {theme.user.id == userId ? (
-                                                <span className="material-symbols-outlined">
-                                                    edit
-                                                </span>
+                                                <>
+                                                    <span className="material-symbols-outlined" data-bs-toggle="modal" data-bs-target={`#modalEditTheme${theme.id}`} onClick={() => openEditModal(theme)}>
+                                                        edit
+                                                    </span>
+
+                                                    <div className="modal fade" id={`modalEditTheme${theme.id}`} tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div className="modal-dialog modal-lg">
+                                                            <div className="modal-content">
+                                                                <div className="modal-header">
+                                                                    <h1 className="modal-title fs-5" id="exampleModalLabel">Editar Categoría</h1>
+                                                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div className="modal-body text-start d-flex flex-column gap-3">
+                                                                    <label className="fw-bold">Título</label>
+                                                                    <input type="text" className='form-control' value={themeTitle} onChange={(e) => actions.setThemeTitle(e.target.value)} />
+                                                                    <label className="fw-bold">Contenido</label>
+                                                                    <textarea rows={15} className='form-control' value={themeContent} onChange={(e) => actions.setThemeContent(e.target.value)} />
+                                                                    <label className="fw-bold">Categoría</label>
+                                                                    <input type="text" className='form-control' value={themeCategory} onChange={(e) => actions.setThemeCategory(e.target.value)} />
+                                                                </div>
+                                                                <div className="modal-footer">
+                                                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                                    <button onClick={() => editTheme(theme.id,themeTitle,themeContent,themeCategory )} type="button" className={`btn ${styles.bg_blue} text-light`} data-bs-dismiss="modal">Editar</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </>
+
+
                                             ) : ""}
                                         </div>
                                         <hr />
@@ -130,11 +167,12 @@ export const Theme = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-light rounded my-4 p-3">
+                        {token ? <div className="bg-light rounded my-4 p-3">
                             <h3 className="mb-3">Comentarios</h3>
                             <CommentBox />
                             <button onClick={() => addComment(theme.id)} className={`btn ${styles.btn_orange} mt-3`}>Comentar</button>
-                        </div>
+                        </div> : ""}
+
                         {comments
                             .filter(comment => comment.theme.id === theme.id)
                             .map(comment => {
@@ -163,7 +201,7 @@ export const Theme = () => {
                                         commentDate={comment.date}
 
                                         // Mostrar el botón de editar si el usuario actual es el dueño del comentario
-                                        edit={comment.user.id === userId ? (
+                                        edit={comment.user.id == userId ? (
                                             <span className="material-symbols-outlined">
                                                 edit
                                             </span>

@@ -19,3 +19,19 @@ h1, h2, h3, h4, h5, h6, a, p, span, div, table, hr {
   margin:0;
   padding: 0;
 }
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* El contenido toma todo el espacio disponible */
+.content {
+  flex: 1;
+}
+
+/* El footer se coloca al final del contenedor */
+footer {
+  margin-top: auto;
+}
