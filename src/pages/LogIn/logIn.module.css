@@ -1,8 +1,28 @@
-.container{
-    background-image: url("../../assets/img/login.png");
-    background-repeat: no-repeat;
-    background-position: right;
+.container {
+    position: relative;
+    background-image: url("../../assets/img/trabajo.avif");
+    background-size: cover;
+    background-position: center;
+    height: 40rem;
 }
+
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Ajusta el color y la transparencia */
+    z-index: 1; /* Asegúrate de que esté detrás del contenido */
+}
+
+/* El contenido dentro del container */
+.container > * {
+    position: relative;
+    z-index: 2; /* El contenido se mantiene sobre la capa de la transparencia */
+}
+
 
 .input_text:focus{
     outline: none !important;
